@@ -47,7 +47,6 @@ class SupplierController extends Controller
          'city'            => $request['city'],
          'state'           => $request['state'],
          'zip'             => $request['zip'],
-         'country'         => $request['country'],
          'comments'        => $request['comments'],
          'opening_balance' => $request['opening_balance']
       ]);
