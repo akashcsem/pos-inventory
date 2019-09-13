@@ -18,8 +18,6 @@ class CreateCategoriesTable extends Migration
             $table->string('name');
             $table->timestamps();
         });
-        // Here's the magic
-        \DB::statement('ALTER TABLE categories AUTO_INCREMENT = 101;');
     }
 
     /**
