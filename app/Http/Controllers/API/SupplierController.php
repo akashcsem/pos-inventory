@@ -34,7 +34,7 @@ class SupplierController extends Controller
       $this->validate($request, [
          'name'         => 'required|string|max:255|min:2',
          'email'        => 'required|string|max:255|min:2',
-         'mobile'       => 'required|string|max:255|min:2',
+         // 'mobile'       => 'required|string|max:255|min:2',
          'address'      => 'required|string|max:255|min:2',
       ]);
       // insert data
