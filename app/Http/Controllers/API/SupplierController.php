@@ -44,7 +44,6 @@ class SupplierController extends Controller
          'mobile'          => $request['mobile'],
          'address'         => $request['address'],
          'company_name'    => $request['company_name'],
-         'account_number'  => $request['account _number'],
          'city'            => $request['city'],
          'state'           => $request['state'],
          'zip'             => $request['zip'],
