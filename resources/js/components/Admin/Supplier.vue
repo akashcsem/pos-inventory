@@ -117,18 +117,18 @@
                 </div>
 
                 <div class="form-group col-md-6">
-                  <label for="phone_number">Mobile Number</label>
+                  <label for="mobile">Mobile Number</label>
                   <input
-                    v-model="form.phone_number"
+                    v-model="form.mobile"
                     type="text"
-                    name="phone_number"
-                    id="phone_number"
+                    name="mobile"
+                    id="mobile"
                     class="form-control form-control-sm"
                     style="margin-top: -8px;"
                     placeholder="Mobile number"
-                    :class="{ 'is-invalid': form.errors.has('phone_number') }"
+                    :class="{ 'is-invalid': form.errors.has('mobile') }"
                   />
-                  <has-error :form="form" field="phone_number"></has-error>
+                  <has-error :form="form" field="mobile"></has-error>
                 </div>
 
                 <div class="form-group col-md-6">
