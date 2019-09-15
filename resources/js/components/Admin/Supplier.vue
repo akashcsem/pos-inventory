@@ -13,7 +13,7 @@
                 @keyup="search_supplier"
                 v-model="search"
                 class="text-light form-control mr-5 form-control-sm"
-                style="background: #563D7C"
+                style="background: #6574CD"
                 placeholder="Search Supplier"
               />
             </div>
@@ -25,8 +25,8 @@
             </div>
           </div>
           <!-- /.card-header -->
-          <div class="card-body table-responsive p-0">
-            <table class="table table-hover">
+          <div class="card-body p-0">
+            <table class="table table-sm table-hover">
               <tbody>
                 <tr>
                   <th>ID</th>
@@ -37,8 +37,8 @@
                   <th>Address</th>
                   <th>Action</th>
                 </tr>
-                <tr v-for="supplier in suppliers" :key="supplier.id">
-                  <td>{{ supplier.id }}</td>
+                <tr v-for="(supplier, index) in suppliers" :key="index">
+                  <td>{{ index + 1 }}</td>
                   <td style="text-transform: capitalize">{{ supplier.name | lowercase }}</td>
                   <td>{{ supplier.email }}</td>
                   <td style="text-transform: capitalize">{{ supplier.company_name | lowercase }}</td>

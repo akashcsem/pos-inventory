@@ -335,7 +335,7 @@ export default {
 
           axios({
             method: "post",
-            url: "api/sale/return/products/",
+            url: "api/sale-return/",
             data: {
               returnInfo: JSON.stringify(this.returnInfo),
               returnItems: JSON.stringify(this.returnItems)

@@ -107,7 +107,7 @@
                     <a href="#">
                       <i class="fas fa-edit green" style="font-size: 20px;"></i>
                     </a>
-                    <a href="#">
+                    <a href="#" @click="deleteSale(sale)">
                       <i class="fas fa-trash red" style="font-size: 20px;"></i>
                     </a>
                   </td>
@@ -254,7 +254,11 @@ export default {
       sales: [],
       mode: "sale-list",
       invoice: {},
-      showingAddModal: false
+      showingAddModal: false,
+      form: new Form({
+        id: 0,
+        sale_inv_no: ""
+      })
     };
   },
 
@@ -281,19 +285,42 @@ export default {
       window.print();
     },
 
+    // delete sale
+    deleteSale(sale) {
+      this.form.id = sale.id;
+      this.form.sale_inv_no = sale.sale_inv_no;
+      swal
+        .fire({
+          title: "Are you sure?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        })
+        .then(result => {
+          if (result.value) {
+            this.form
+              .delete("api/sale/" + sale.sale_inv_no)
+              .then(() => {
+                this.loadSales();
+                swal.fire(
+                  "Deleted!",
+                  sale.sale_inv_no + "Deleted successful.",
+                  "success"
+                );
+              })
+              .catch(() => {
+                swal.fire("", "Sale Deleted Failed", "error");
+              });
+          }
+        });
+    },
+
     // load data for table
     loadSales() {
       axios.get("api/sale").then(({ data }) => (this.sales = data));
     }
-    // search
-    // search_sales() {
-    //   if (this.search != "") {
-    //     axios.get("api/sale/search/"+this.search)
-    //     .then(({ data }) => (this.sales = data));
-    //   } else {
-    //     this.loadSales();
-    //   }
-    // },
   }, // end method
 
   created() {

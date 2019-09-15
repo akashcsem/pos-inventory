@@ -31,7 +31,7 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        $user_id = auth('api')->user()->id;
+        // $user_id = auth('api')->user()->id;
         $this->validate($request, [
             'name'         => 'required|string|max:255|min:2',
             'mobile'       => 'required|string|max:16|min:8',
@@ -39,11 +39,12 @@ class CustomerController extends Controller
         ]);
         // insert data
         Customer::create([
-            'name'           => $request['name'],
-            'email'          => $request['email'],
-            'mobile'         => $request['mobile'],
-            'address'        => $request['address'],
-            'user_id'        => $user_id,
+            'name'            => $request['name'],
+            'email'           => $request['email'],
+            'mobile'          => $request['mobile'],
+            'address'         => $request['address'],
+            'user_id'         => auth('api')->user()->id,
+            'opening_balance' => $request['opening_balance'],
         ]);
         return "Success";
     }

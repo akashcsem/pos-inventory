@@ -56,7 +56,6 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-
         $this->validate($request, [
             'name'        => 'required|string|max:255|min:2|unique:products',
             'category_id' => 'required',
@@ -72,14 +71,13 @@ class ProductController extends Controller
             'opening_stock'  => $request->opening_stock,
             'product_code'   => '123',
         ]);
-        // $lastRecord = DB::table('products')->where('product_code', '123')->first();
-        // $product    = Product::find($lastRecord->id);
         $product_code = "pro-code-" . strval($request->category_id) . '-' . strval($product->id + 10000);
         $product->product_code = $product_code;
         $product->save();
 
         Stock::create([
             'product_code'   => $product_code,
+            'price'          => $request->purchase_price,
         ]);
     }
 
@@ -96,7 +94,6 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
-
         $this->validate($request, [
             'name'            => 'required',
             'category_id'     => 'required',
@@ -121,6 +118,7 @@ class ProductController extends Controller
             ->with('unit')
             ->paginate(5);
     }
+
     public function filterProduct($perPage, $order, $orderField)
     {
         if ($orderField == 'category') {
@@ -140,8 +138,6 @@ class ProductController extends Controller
                 ->with('unit')
                 ->orderBy($orderField, $order)
                 ->paginate($perPage);
-            // Ojbect return kore nah array?
-
         }
     }
 

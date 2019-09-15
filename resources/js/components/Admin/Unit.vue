@@ -14,23 +14,23 @@
             </div>
           </div>
           <!-- /.card-header -->
-          <div class="card-body table-responsive p-0">
-            <table class="table table-hover">
+          <div class="card-body p-0">
+            <table class="table table-sm table-hover">
               <tbody>
                 <tr>
                   <th>ID</th>
                   <th>Name</th>
                   <th>Action</th>
                 </tr>
-                <tr v-for="unit in units.data" :key="unit.id">
-                  <td>{{ unit.id }}</td>
+                <tr v-for="(unit, index) in units.data" :key="index">
+                  <td>{{ index + 1 }}</td>
                   <td>{{ unit.name }}</td>
                   <td>
                     <a href="#" @click="editModal(unit)">
-                      <i class="fas fa-edit green" style="font-size: 25px;"></i>
+                      <i class="fas fa-edit green" style="font-size: 20px;"></i>
                     </a> &nbsp;
                     <a href="#" @click="deleteUnit(unit.id)">
-                      <i class="fas fa-trash red" style="font-size: 25px;"></i>
+                      <i class="fas fa-trash red" style="font-size: 20px;"></i>
                     </a>
                   </td>
                 </tr>

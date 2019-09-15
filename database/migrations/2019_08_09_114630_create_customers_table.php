@@ -18,8 +18,9 @@ class CreateCustomersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('mobile');
-            $table->string('address');
+            $table->string('address')->nullable();
             $table->integer('user_id');
+            $table->string('opening_balance')->default(0);
             $table->timestamps();
         });
     }

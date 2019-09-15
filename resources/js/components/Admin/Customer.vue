@@ -38,7 +38,7 @@
           </div>
           <!-- /.card-header -->
           <div class="card-body table-responsive p-0">
-            <table class="table table-hover">
+            <table class="table table-sm table-hover">
               <tbody>
                 <tr class="bg-primary">
                   <th>ID</th>
@@ -48,8 +48,8 @@
                   <th>Address</th>
                   <th>Action</th>
                 </tr>
-                <tr v-for="customer in customers.data" :key="customer.id">
-                  <td>{{ customer.id }}</td>
+                <tr v-for="(customer, index) in customers.data" :key="index">
+                  <td>{{ index + 1 }}</td>
                   <td>{{ customer.name | capitalize }}</td>
                   <td>{{ customer.email }}</td>
                   <td>{{ customer.mobile }}</td>

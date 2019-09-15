@@ -215,7 +215,7 @@ export default {
   methods: {
     // results for pagination
     getResults(page = 1) {
-      axios.get("api/sale/return/invoices?page=" + page).then(response => {
+      axios.get("api/sale-return?page=" + page).then(response => {
         this.sales = response.data;
       });
     },
@@ -233,9 +233,9 @@ export default {
         .then(result => {
           if (result.value) {
             axios
-              .get("api/sale/return/delete/" + id)
+              .delete("api/sale-return/" + id)
               .then(() => {
-                this.loadSales();
+                this.loadSaleReturns();
                 swal.fire("Deleted!", id + "Deleted successful.", "success");
               })
               .catch(() => {
@@ -259,17 +259,15 @@ export default {
       window.print();
     },
     // load data for table
-    loadSales() {
-      axios
-        .get("api/sale/return/invoices")
-        .then(({ data }) => (this.sales = data));
+    loadSaleReturns() {
+      axios.get("api/sale-return").then(({ data }) => (this.sales = data));
     }
   }, // end method
 
   created() {
-    this.loadSales();
+    this.loadSaleReturns();
     Fire.$on("AfterAction", () => {
-      this.loadSales();
+      this.loadSaleReturns();
     });
   }
 };

@@ -18,6 +18,8 @@ class CreateCategoriesTable extends Migration
             $table->string('name');
             $table->timestamps();
         });
+        // primary key start from 100
+        \DB::update("ALTER TABLE categories AUTO_INCREMENT = 101");
     }
 
     /**

@@ -34,7 +34,7 @@ class SupplierController extends Controller
       $this->validate($request, [
          'name'         => 'required|string|max:255|min:2',
          'email'        => 'required|string|max:255|min:2',
-         // 'mobile'       => 'required|string|max:255|min:2',
+         'mobile'       => 'required|string|max:255|min:2',
          'address'      => 'required|string|max:255|min:2',
       ]);
       // insert data
@@ -48,7 +48,8 @@ class SupplierController extends Controller
          'state'           => $request['state'],
          'zip'             => $request['zip'],
          'comments'        => $request['comments'],
-         'opening_balance' => $request['opening_balance']
+         'user_id'         => auth('api')->user()->id,
+         'opening_balance' => $request['opening_balance'],
       ]);
    }
 

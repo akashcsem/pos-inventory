@@ -382,7 +382,7 @@ export default {
       } else {
         axios({
           method: "post",
-          url: "api/sale/products",
+          url: "api/sale",
           data: {
             // pass to object
             shopItems: JSON.stringify(this.shopItems),
@@ -408,20 +408,8 @@ export default {
             });
           });
       }
-    },
-
-    // load data for table
-    loadSales() {
-      // axios.get("api/sale").then(({ data }) => (this.sales = data));
     }
-  }, // end method
-
-  created() {
-    this.loadSales();
-    Fire.$on("AfterAction", () => {
-      this.loadSales();
-    });
-  }
+  } // end method
 };
 </script>
 

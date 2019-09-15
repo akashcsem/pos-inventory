@@ -10,8 +10,9 @@ class CategoryController extends Controller
 {
   public function index()
   {
-    return Category::latest()->paginate(5);
+    return Category::latest()->paginate(10);
   }
+
   public function category_list()
   {
     return Category::paginate(255);
@@ -19,15 +20,11 @@ class CategoryController extends Controller
 
   public function store(Request $request)
   {
-    // dd($request->all());
-    // validation
     $this->validate($request, [
-      'name'         => 'required|string|max:255|min:2',
+      'name'         => 'required|string|max:255|min:2|unique:categories',
     ]);
-    // insert data
-    return Category::create([
-      'name'      => $request['name'],
-    ]);
+
+    Category::create(['name' => $request['name']]);
   }
 
 
@@ -36,15 +33,13 @@ class CategoryController extends Controller
     // display single item detail
   }
 
-  public function update(Request $request, $id)
+  public function update(Request $request, Category $category)
   {
-    // update data
-    $category = Category::findOrFAil($id);
     $this->validate($request, [
-      'name'      => 'required|string|max:255|min:2',
+      'name'      => 'required|string|max:255|min:2|unique:users,' . $category->id
     ]);
     $category->update($request->all());
-    return ['message' => 'Getting id is: ' . $id];
+    return ['message' => 'Category Updated successful'];
   }
 
   public function destroy(Category $category)

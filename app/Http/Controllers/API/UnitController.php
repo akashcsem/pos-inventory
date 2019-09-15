@@ -11,7 +11,7 @@ class UnitController extends Controller
 {
   public function index()
   {
-    return Unit::latest()->paginate(5);
+    return Unit::latest()->paginate(10);
   }
   public function unit_list()
   {
@@ -21,7 +21,7 @@ class UnitController extends Controller
   public function store(Request $request)
   {
     $this->validate($request, [
-      'name'         => 'required|string|max:15',
+      'name'         => 'required|string|max:15|unique:units',
     ]);
     // insert data
     return Unit::create([
@@ -41,12 +41,10 @@ class UnitController extends Controller
       'name'      => 'required|string|max:255|min:2',
     ]);
     $unit->update($request->all());
-    return ['message' => 'Unit updated successfully'];
   }
 
   public function destroy(Unit $unit)
   {
     $unit->delete();
-    return ['message' => 'Unit deleted successfully'];
   }
 }

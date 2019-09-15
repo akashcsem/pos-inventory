@@ -7,10 +7,6 @@ use Illuminate\Http\Request;
 | API Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
 */
 
 
@@ -19,21 +15,21 @@ use Illuminate\Http\Request;
 // });
 
 Route::apiResources([
-    'user'       => 'API\UserController',
-    'customer'   => 'API\CustomerController',
-    'supplier'   => 'API\SupplierController',
-    'product'    => 'API\ProductController',
-    'category'   => 'API\CategoryController',
-    'user'       => 'API\UserController',
-    'customer'   => 'API\CustomerController',
-    'supplier'   => 'API\SupplierController',
-    'purchase'   => 'API\PurchaseController',
-    'product'    => 'API\ProductController',
-    'point'      => 'API\PointController',
-    'sale'       => 'API\SaleController',
-    'saledetail' => 'API\SaleDetailController',
-    'unit'       => 'API\UnitController',
-    'collection' => 'API\CollectionController',
+    'user'              => 'API\UserController',
+    'customer'          => 'API\CustomerController',
+    'supplier'          => 'API\SupplierController',
+    'product'           => 'API\ProductController',
+    'category'          => 'API\CategoryController',
+    'user'              => 'API\UserController',
+    'customer'          => 'API\CustomerController',
+    'supplier'          => 'API\SupplierController',
+    'purchase'          => 'API\PurchaseController',
+    'product'           => 'API\ProductController',
+    'point'             => 'API\PointController',
+    'sale'              => 'API\Sale\SaleController',
+    'sale-return'       => 'API\Sale\SaleReturnController',
+    'unit'              => 'API\UnitController',
+    'collection'        => 'API\CollectionController',
 ]);
 
 Route::get('category-list', 'API\CategoryController@category_list');
@@ -57,18 +53,15 @@ Route::get('customer-list', 'API\CustomerController@customer_list');
 
 Route::post('/purchase/products/{supplier}', 'API\PurchaseController@storeProducts');
 // purchase return
-Route::get('/purchase/returnable/products/{supplier}', 'API\PurchaseController@returnableProducts');
 Route::post('/purchase/return/products/', 'API\PurchaseController@returnProducts');
 Route::get('/purchase/return/invoices/', 'API\PurchaseController@returnInvoices');
 Route::get('/purchase/return/delete/{id}', 'API\PurchaseController@returnDelete');
 
 
-Route::post('/sale/products/', 'API\SaleController@storeProducts');
-// sales return
-Route::get('/sale/returnable/products/{customer}', 'API\SaleController@returnableProducts');
-Route::post('/sale/return/products/', 'API\SaleController@returnProducts');
-Route::get('/sale/return/invoices/', 'API\SaleController@returnInvoices');
-Route::get('/sale/return/delete/{id}', 'API\SaleController@returnDelete');
+// sales returnable products
+Route::get('/sale/returnable/products/{customer}', 'API\Sale\SaleReturnController@returnableProducts');
+Route::get('/purchase/returnable/products/{supplier}', 'API\Purchase\PurchaseReturnController@returnableProducts');
+
 
 // stock
 Route::get('/current/stock', 'API\StockController@index');
