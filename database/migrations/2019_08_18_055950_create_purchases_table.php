@@ -24,6 +24,12 @@ class CreatePurchasesTable extends Migration
             $table->bigInteger('subTotal')->nullable();
             $table->bigInteger('grandTotal');
             $table->string('remarks')->nullable();
+
+            // for cash supplier
+            $table->string('name')->nullable();
+            $table->string('mobile')->nullable();
+            $table->string('address')->nullable();
+
             $table->timestamps();
         });
     }

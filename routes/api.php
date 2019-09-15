@@ -16,27 +16,27 @@ use Illuminate\Http\Request;
 
 Route::apiResources([
     'user'              => 'API\UserController',
-    'customer'          => 'API\CustomerController',
-    'supplier'          => 'API\SupplierController',
-    'product'           => 'API\ProductController',
-    'category'          => 'API\CategoryController',
-    'user'              => 'API\UserController',
-    'customer'          => 'API\CustomerController',
-    'supplier'          => 'API\SupplierController',
-    'purchase'          => 'API\PurchaseController',
-    'product'           => 'API\ProductController',
     'point'             => 'API\PointController',
+    'unit'              => 'API\UnitController',
+    'category'          => 'API\CategoryController',
+    'product'           => 'API\ProductController',
+    'supplier'          => 'API\SupplierController',
+    'customer'          => 'API\CustomerController',
+    'purchase'          => 'API\Purchase\PurchaseController',
     'sale'              => 'API\Sale\SaleController',
     'sale-return'       => 'API\Sale\SaleReturnController',
-    'unit'              => 'API\UnitController',
+    'purchase-return'   => 'API\Purchase\PurchaseReturnController',
     'collection'        => 'API\CollectionController',
+    'payment'           => 'API\CollectionController',
 ]);
 
 Route::get('category-list', 'API\CategoryController@category_list');
 Route::get('supplier-list', 'API\SupplierController@supplier_list');
+Route::get('customer-list', 'API\CustomerController@customer_list');
+Route::get('unit-list', 'API\UnitController@unit_list');
+
 Route::get('/supplier/search/{search}', 'API\SupplierController@searchSupplier');
 
-Route::get('unit-list', 'API\UnitController@unit_list');
 
 // product
 Route::get('product-list', 'API\ProductController@product_list');
@@ -49,14 +49,6 @@ Route::get('/customer/search/{search}', 'API\CustomerController@customer_search'
 
 
 Route::get('/customer/search/{search}', 'API\CustomerController@customer_search');
-Route::get('customer-list', 'API\CustomerController@customer_list');
-
-Route::post('/purchase/products/{supplier}', 'API\PurchaseController@storeProducts');
-// purchase return
-Route::post('/purchase/return/products/', 'API\PurchaseController@returnProducts');
-Route::get('/purchase/return/invoices/', 'API\PurchaseController@returnInvoices');
-Route::get('/purchase/return/delete/{id}', 'API\PurchaseController@returnDelete');
-
 
 // sales returnable products
 Route::get('/sale/returnable/products/{customer}', 'API\Sale\SaleReturnController@returnableProducts');

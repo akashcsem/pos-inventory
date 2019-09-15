@@ -8,8 +8,11 @@ use App\Model\Others\Category;
 
 class CategoryController extends Controller
 {
-  public function index()
+  public function index($mode = null)
   {
+    if ($mode) {
+      return "get list";
+    }
     return Category::latest()->paginate(10);
   }
 

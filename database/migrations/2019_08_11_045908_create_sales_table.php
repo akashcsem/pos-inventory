@@ -25,6 +25,7 @@ class CreateSalesTable extends Migration
             $table->bigInteger('grandTotal');
             $table->string('remarks')->nullable();
 
+            // for cash customer
             $table->string('name')->nullable();
             $table->string('mobile')->nullable();
             $table->string('address')->nullable();

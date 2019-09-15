@@ -1,37 +1,7 @@
 <template>
   <div>
-    <!-- call modal from partials/components -->
-    <modal
-      modalHeading="Add new category"
-      :cond="showingAddModal"
-      @modalClose="showingAddModal=false"
-    >
-      <template slot="header">Login</template>
-      <template slot="body">
-        <div class="form-group">
-          <label for="name">Name</label>
-          <input type="text" class="form-control" placeholder="Type your name" />
-        </div>
-      </template>
-
-      <template slot="footer">
-        <button
-          type="button"
-          class="btn btn-outline-danger btn-sm float-right"
-          @click="showingAddModal = false"
-        >Close</button>
-        <button type="button" class="btn btn-outline-primary btn-sm float-right mx-2">Save</button>
-      </template>
-    </modal>
-
     <div class="row">
       <div class="col-12 mb-3 text-right">
-        <span
-          class="float-right px-3 print-invoice"
-          v-show="mode=='invoice'"
-          @click="showingAddModal = true"
-        >Modal</span>
-
         <span
           class="float-right px-3 print-invoice"
           v-show="mode=='invoice'"

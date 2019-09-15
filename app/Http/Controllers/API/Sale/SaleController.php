@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Sale;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Others\Customer;
+use App\Model\Others\CustomerDetail;
 use App\Model\Sale\Sale;
 use App\Model\Sale\SaleDetail;
 use App\Model\Stocks\Stock;
@@ -73,6 +74,13 @@ class SaleController extends Controller
         $sale->sale_inv_no  = $invoice_number;
         $sale->save();
 
+        CustomerDetail::create([
+            'supplier_id'  => Customer::where('name', '=', $customerInfo->name)->first()->id,
+            'debit'        => $customerInfo->grandTotal - $discount,
+            'description'  => "Sale",
+            'source_id'    => $invoice_number,
+        ]);
+
         foreach (json_decode($request->shopItems) as $item) {
             SaleDetail::create([
                 'sale_inv_no'  => $invoice_number,
@@ -129,15 +137,14 @@ class SaleController extends Controller
         $porducts = SaleDetail::where('sale_inv_no', '=', $sale_inv_no)->get();
 
         foreach ($porducts as $porduct) {
-            $pro = SaleDetail::where('product_code', '=', $porduct->product_code)
-                ->where('sale_inv_no', '=', $sale_inv_no)->first();
             $stock = Stock::where('product_code', '=', $porduct->product_code)->first();
-            $stock->quantity += $pro->quantity;
+            $stock->quantity += $porduct->quantity;
             $stock->save();
         }
 
         StockDetail::where('source_id', '=', $sale_inv_no)->delete();
         SaleDetail::where('sale_inv_no', '=', $sale_inv_no)->delete();
+        CustomerDetail::where('source_id', '=', $sale_inv_no)->delete();
         Sale::where('sale_inv_no', '=', $sale_inv_no)->delete();
     }
 }

@@ -4,8 +4,8 @@ namespace App\Http\Controllers\API\Sale;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Model\Others\CustomerDetail;
 use App\Model\Sale\Sale;
-use App\Model\Sale\SaleDetail;
 use App\Model\Sale\SaleReturn;
 use App\Model\Sale\SaleReturnDetail;
 use App\Model\Stocks\Stock;
@@ -67,11 +67,15 @@ class SaleReturnController extends Controller
         ]);
 
         $invoice_number = "sale-rtn-" . strval($saleReturn->id + 100000);
+        $saleReturn->sale_rtn_no  = $invoice_number;
+        $saleReturn->save();
 
-        DB::table('sale_returns')
-            ->where('sale_rtn_no', '124')
-            ->update(['sale_rtn_no' => $invoice_number]);
-
+        CustomerDetail::create([
+            'supplier_id'  => Customer::where('name', '=', $returnInfo->name)->first()->id,
+            'credit'       => $returnInfo->grandTotal - $discount,
+            'description'  => "Sale Return",
+            'source_id'    => $invoice_number,
+        ]);
 
         foreach ($returnItems as $item) {
             SaleReturnDetail::create([
@@ -124,10 +128,17 @@ class SaleReturnController extends Controller
      */
     public function destroy($sale_rtn_no)
     {
-        SaleReturn::where('sale_rtn_no', '=', $sale_rtn_no)->delete();
-        SaleReturnDetail::where('sale_rtn_no', '=', $sale_rtn_no)->delete();
+        $porducts = SaleReturnDetail::where('sale_rtn_no', '=', $sale_rtn_no)->get();
 
-        // $saleReturn->delete();
-        // $saleReturnDetail->delete();
+        foreach ($porducts as $porduct) {
+            $stock = Stock::where('product_code', '=', $porduct->product_code)->first();
+            $stock->quantity -= $porduct->quantity;
+            $stock->save();
+        }
+
+        StockDetail::where('source_id', '=', $sale_rtn_no)->delete();
+        SaleReturnDetail::where('sale_rtn_no', '=', $sale_rtn_no)->delete();
+        CustomerDetail::where('source_id', '=', $sale_rtn_no)->delete();
+        SaleReturn::where('sale_rtn_no', '=', $sale_rtn_no)->delete();
     }
 }

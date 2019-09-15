@@ -204,7 +204,6 @@ export default {
       product_codes: [],
       products: [],
       sales: [],
-      saleForm: new Form(),
       search: "",
       grandTotal: 0,
       totalQuantity: 0,
@@ -358,7 +357,6 @@ export default {
 
     // product sale
     saleProduct() {
-      this.saleForm = this.shopItems;
       this.$Progress.start();
       this.customerInfo.cashSale = this.cashSale;
 

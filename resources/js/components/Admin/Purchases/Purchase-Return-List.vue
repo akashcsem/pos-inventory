@@ -219,7 +219,7 @@ export default {
   methods: {
     // results for pagination
     getResults(page = 1) {
-      axios.get("api/purchase/return/invoices?page=" + page).then(response => {
+      axios.get("api/purchase-return?page=" + page).then(response => {
         this.purchases = response.data;
       });
     },
@@ -264,7 +264,7 @@ export default {
     // load data for table
     loadPurchases() {
       axios
-        .get("api/purchase/return/invoices")
+        .get("api/purchase-return")
         .then(({ data }) => (this.purchases = data));
     }
   }, // end method
