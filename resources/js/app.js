@@ -6,6 +6,7 @@ require("./bootstrap");
 // vue instance initial
 window.Vue = require("vue");
 
+import PurchaseInvoice from "./components/Admin/Purchases/invoice";
 //  import necessary components
 import TestModal from "./components/partials/modal.vue";
 
@@ -31,6 +32,7 @@ import "element-ui/lib/theme-chalk/index.css";
 // vuejs modal
 // import VModal from "vue-js-modal";
 Vue.component("modal", TestModal);
+Vue.component("purchase-invoice", PurchaseInvoice);
 
 window.Form = Form;
 window.Fire = new Vue();

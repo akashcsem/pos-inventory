@@ -72,7 +72,7 @@
                     <a href="#" @click="showInvoice(purchase)" title="View Invoice">
                       <i class="fas fa-eye" style="font-size: 20px;"></i>
                     </a>
-                    <a href="#">
+                    <a href="#" @click="editPurchase(purchase)">
                       <i class="fas fa-edit green" style="font-size: 20px;"></i>
                     </a>
                     <a href="#" @click="deletePurchase(purchase)">
@@ -95,7 +95,8 @@
       <!-- Display all purchase in table -->
 
       <!-- Invoice -->
-      <div class="col-12 mb-3" id="invoice" v-else>
+      <purchase-invoice class="text-dark mx-auto" v-else></purchase-invoice>
+      <!-- <div class="col-12 mb-3" id="invoice" v-else>
         <div class="card p-5">
           <div>
             <div class="row">
@@ -106,7 +107,7 @@
                   <br />
                   <b>Dhaka, Bangladesh</b>
                   <br />
-                  <b>017xxxxxxxx</b>
+                  <b>01976829262</b>
                 </p>
               </div>
               <div class="col-md-6 text-right">
@@ -121,7 +122,7 @@
                 <h6 class="d-block">Company Name: {{ invoice.supplier.company_name }}</h6>
                 <h6 class="d-block">Address: {{ invoice.supplier.address }}</h6>
                 <h6 class="d-block">Email: {{ invoice.supplier.email }}</h6>
-                <h6 class="d-block">Phone Number: {{ invoice.supplier.phone_number }}</h6>
+                <h6 class="d-block">Phone Number: {{ invoice.supplier.mobile }}</h6>
               </div>
 
               <div class="col-md-4 ml-auto">
@@ -194,7 +195,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div>-->
       <!-- End Invoice -->
     </div>
   </div>
@@ -235,6 +236,10 @@ export default {
       this.invoice = purchase;
       this.mode = "invoice";
     },
+    editPurchase(prop_data) {
+      this.$router.push({ name: "purchase", params: { prop_data } });
+    },
+
     printInvoice(el) {
       var restorepage = $("body").html();
       var printcontent = $("#" + el).clone();

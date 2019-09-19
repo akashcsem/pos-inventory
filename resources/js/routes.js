@@ -35,7 +35,13 @@ export default [
     { path: "/unit", component: Unit, meta: { title: "Unit" } },
     { path: "/customer", component: Customer, meta: { title: "Customer" } },
 
-    { path: "/purchase", component: Purchase, meta: { title: "Purchase" } },
+    {
+        path: "/purchase",
+        name: "purchase",
+        component: Purchase,
+        meta: { title: "Purchase" },
+        props: true
+    },
     {
         path: "/purchase-list",
         component: PurchaseL,

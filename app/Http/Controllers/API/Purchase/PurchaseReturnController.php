@@ -9,9 +9,7 @@ use App\Model\Others\SupplierDetail;
 use App\Model\Purchase\Purchase;
 use App\Model\Purchase\PurchaseReturn;
 use App\Model\Purchase\PurchaseReturnDetail;
-use App\Model\Stocks\Stock;
-use App\Model\Stocks\StockDetail;
-use DB;
+use App\UpdateData;
 
 class PurchaseReturnController extends Controller
 {
@@ -34,13 +32,11 @@ class PurchaseReturnController extends Controller
 
         return response()->JSON($purchases->paginate(3));
     }
+
     // get returnable purchases product list
     public function returnableProducts($supplier)
     {
-        $purchases = Purchase::join('suppliers', 'suppliers.id', '=', 'purchases.supplier_id')
-            // ->where('suppliers.name', '=', $supplier)
-            ->with('purchaseItems');
-
+        $purchases = Purchase::join('suppliers', 'suppliers.id', '=', 'purchases.supplier_id')->with('purchaseItems');
         return response()->JSON($purchases->get());
     }
     /**
@@ -51,16 +47,18 @@ class PurchaseReturnController extends Controller
      */
     public function store(Request $request)
     {
-        $returnInfo  = json_decode($request->returnInfo);
-        $returnItems = json_decode($request->returnItems);
-        $user_id     = auth('api')->user()->id;
-        $supplier    = DB::table('suppliers')->where('name', $returnInfo->supplier)->first();
+        $returnInfo     = json_decode($request->returnInfo);
+        $returnItems    = json_decode($request->returnItems);
 
-        $discount = 0;
+        $discount       = 0;
+        $user_id        = auth('api')->user()->id;
+        $supplier_id    = Supplier::where('name', '=', $returnInfo->supplier)->first()->id;
+        $grand_total    = $returnInfo->grandTotal - $discount;
+
         $purchaseReturn    =  PurchaseReturn::create([
             'pur_rtn_no'   => '124',
             'user_id'      => $user_id,
-            'supplier_id'  => $supplier->id,
+            'supplier_id'  => $supplier_id,
             'totalQty'     => $returnInfo->totalQty,
             'discount'     => $discount,
             'grandTotal'   => $returnInfo->grandTotal,
@@ -70,12 +68,7 @@ class PurchaseReturnController extends Controller
         $purchaseReturn->pur_rtn_no  = $invoice_number;
         $purchaseReturn->save();
 
-        SupplierDetail::create([
-            'customer_id'  => Supplier::where('name', '=', $returnInfo->name)->first()->id,
-            'debit'        => $returnInfo->grandTotal - $discount,
-            'description'  => "Purchase Return",
-            'source_id'    => $invoice_number,
-        ]);
+        (new UpdateData())->addToCustomerDetails(new SupplierDetail(), $supplier_id, 'debit', $grand_total, 'Purchase Return', $invoice_number);
 
         foreach ($returnItems as $item) {
             PurchaseReturnDetail::create([
@@ -84,16 +77,8 @@ class PurchaseReturnController extends Controller
                 'product_code' => $item->productCode,
                 'price'        => $item->productPrice,
             ]);
-
-            StockDetail::create([
-                'product_code' => $item->productCode,
-                'description'  => 'Purchase Return',
-                'source_id'    => $invoice_number,
-                'debit'        => $item->productQuantity,
-            ]);
-            $stock = Stock::where('product_code', '=', $item->productCode)->first();
-            $stock->quantity -= $item->productQuantity;
-            $stock->save();
+            (new UpdateData())->addToStockDetails('debit', $item->productCode, 'Purchase Return', $invoice_number, $item->productQuantity);
+            (new UpdateData())->updateStock('-', $item->productCode, $item->productQuantity);
         }
     }
 
@@ -129,16 +114,9 @@ class PurchaseReturnController extends Controller
     public function destroy($pur_rtn_no)
     {
         $porducts = PurchaseReturnDetail::where('pur_rtn_no', '=', $pur_rtn_no)->get();
-
         foreach ($porducts as $porduct) {
-            $stock = Stock::where('product_code', '=', $porduct->product_code)->first();
-            $stock->quantity += $porduct->quantity;
-            $stock->save();
+            (new UpdateData())->updateStock('+', $porduct->product_code, $porduct->quantity);
         }
-
-        StockDetail::where('source_id', '=', $pur_rtn_no)->delete();
-        PurchaseReturnDetail::where('pur_rtn_no', '=', $pur_rtn_no)->delete();
-        SupplierDetail::where('source_id', '=', $pur_rtn_no)->delete();
-        PurchaseReturn::where('pur_rtn_no', '=', $pur_rtn_no)->delete();
+        (new UpdateData())->deleteAll('purchase_return', $pur_rtn_no);
     }
 }

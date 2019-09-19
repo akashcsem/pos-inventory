@@ -16,7 +16,7 @@ class HelpSeeder extends Seeder
     public function run()
     {
         $categories = array("Food", "Fruit", "Spices", "Vegetable", "Fish", "Toys");
-        $units = array("Pcs", "Kg", "Gm", "Litter", "Ft", "Inch");
+        $units      = array("Pcs", "Kg", "Gm", "Litter", "Ft", "Inch");
 
         for ($i = 0; $i < count($categories); $i++) {
             Category::create([

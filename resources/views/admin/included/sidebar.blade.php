@@ -231,10 +231,10 @@
             </li>
             <!-- Stock Detail -->
             <li class="nav-item">
-              <router-link to="stock-detail" class="nav-link">
+              <router-link to="reports" class="nav-link">
                 <i class="fa fa-shopping-basket" aria-hidden="true"></i>
                 <p>
-                  Stock Detail
+                  Reports
                 </p>
               </router-link>
             </li>

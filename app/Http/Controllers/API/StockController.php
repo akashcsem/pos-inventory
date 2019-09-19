@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Others\Product;
+use App\Model\Stocks\Stock;
 use App\Model\Stocks\StockDetail;
 
 class StockController extends Controller
@@ -53,6 +54,16 @@ class StockController extends Controller
     public function update(Request $request, $id)
     {
         //
+    }
+    public function updateStock($addMode, $product_code, $quantity)
+    {
+        $stock = Stock::where('product_code', '=', $product_code)->first();
+        if ($addMode == '+') {
+            $stock->quantity += $quantity;
+        } else {
+            $stock->quantity -= $quantity;
+        }
+        $stock->save();
     }
 
     /**

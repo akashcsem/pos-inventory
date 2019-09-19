@@ -4,7 +4,10 @@
       <div class="col-12 mx-0">
         <!-- purchase -->
         <div style="background: #563D7C">
-          <h5 class="text-light pl-3" style="line-height: 35px">Purchase Product</h5>
+          <h5
+            class="text-light pl-3"
+            style="line-height: 35px"
+          >{{ mode == 'purchase' ? "Purchase Product" : "Purchase Edit" }}</h5>
         </div>
 
         <!-- Supplier info -->
@@ -16,8 +19,15 @@
                 size="mini"
                 class="float-left"
                 @click="cashPurchase = !cashPurchase"
+                v-show="mode == 'purchase'"
               >{{ cashPurchase ? 'Regular Supplier' : 'Cash' }}</el-button>
-              <el-button type="success" size="mini" class="float-left" @click="clearAll">Clear</el-button>
+              <el-button
+                type="success"
+                size="mini"
+                class="float-left"
+                @click="clearAll"
+                v-show="mode == 'purchase'"
+              >Clear</el-button>
               <el-button type="success" size="mini" class="float-left">
                 <router-link
                   to="purchase-list"
@@ -175,7 +185,10 @@
 
           <!-- submit or purchase products -->
           <div class="col-12 text-right">
-            <button type="submit" @click="purchaseProduct()" class="btn btn-primary btn-sm">Purchase</button>
+            <button
+              @click="purchaseProduct()"
+              class="btn btn-primary btn-sm"
+            >{{ mode == "purchase" ? "Purchase" : "Update Purchase" }}</button>
           </div>
         </div>
       </div>
@@ -194,10 +207,11 @@ export default {
   components: {
     CoolSelect
   },
-
+  props: ["prop_data"],
   // all data
   data() {
     return {
+      mode: "purchase",
       suppliers: [],
       supplier: "",
       prices: [],
@@ -248,6 +262,31 @@ export default {
 
   // mounted
   mounted() {
+    if (this.prop_data) {
+      this.mode = "purchase edit";
+      this.supplier = this.prop_data.name;
+
+      let prop_product = this.prop_data.purchase_items;
+      for (let i = 0; i < prop_product.length; i++) {
+        this.form.productName = prop_product[i].product.name;
+        this.form.product_code = prop_product[i].product_code;
+        this.form.quantity = prop_product[i].quantity;
+        this.form.price = prop_product[i].price;
+
+        this.shopItems.push(this.form);
+        this.form = {};
+      }
+      var total = 0;
+      var quantity = 0;
+      for (var i = 0; i < Object.keys(this.shopItems).length; i++) {
+        total += this.shopItems[i].quantity * this.shopItems[i].price;
+        quantity += parseInt(this.shopItems[i].quantity);
+      }
+      this.grandTotal = total;
+      this.totalQuantity = quantity;
+    } else {
+      this.mode = "purchase";
+    }
     // load suppliers
     axios.get("api/supplier-list").then(({ data }) => {
       for (var i = 0; i < data.length; i++) {
@@ -377,20 +416,32 @@ export default {
           title: "Item can not be null"
         });
       } else {
-        axios({
-          method: "post",
-          url: "api/purchase",
-          data: {
-            // pass to object
-            shopItems: JSON.stringify(this.shopItems),
-            supplierInfo: JSON.stringify(this.supplierInfo)
-          }
-        })
+        axios(
+          this.mode != "purchae"
+            ? {
+                method: "put",
+                url: "api/purchase/" + this.prop_data.pur_inv_no,
+                data: {
+                  shopItems: JSON.stringify(this.shopItems),
+                  supplierInfo: JSON.stringify(this.supplierInfo),
+                  oldPurchase: JSON.stringify(this.prop_data)
+                }
+              }
+            : {
+                method: "post",
+                url: "api/purchase",
+                data: {
+                  shopItems: JSON.stringify(this.shopItems),
+                  supplierInfo: JSON.stringify(this.supplierInfo)
+                }
+              }
+        )
           .then(() => {
+            this.mode != "purchae" ? $message = "Purchase Update Successfull" : $message = "Purchase create Successfull"
             Fire.$emit("AfterAction");
             toast.fire({
               type: "success",
-              title: "Products purchase successfully"
+              title: $message
             });
             this.$Progress.finish();
 
