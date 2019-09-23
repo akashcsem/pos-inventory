@@ -1,102 +1,101 @@
 <template>
-  <div>
-    <div class="row">
-      <div class="col-12 mb-3 text-right">
-        <span
-          class="float-right px-3 print-invoice"
-          v-show="mode=='invoice'"
-          @click="printInvoice('invoice')"
-        >Print</span>
+  <div class="row" id="fullpage">
+    <div class="col-12 mb-3 text-right">
+      <span
+        class="float-right px-3 print-invoice"
+        v-show="mode=='invoice'"
+        @click="printInvoice('invoice')"
+      >Print</span>
 
-        <span
-          class="float-right px-2 purchase-list"
-          v-show="mode=='invoice'"
-          @click="mode= 'purchase'"
-        >Purchase List</span>
-      </div>
-      <!-- Display all purchase in table -->
-      <div class="col-12 mx-auto" v-if="mode != 'invoice'">
-        <!-- display all purchase -->
-        <div class="card">
-          <div class="card-header" style="background: #563D7C">
-            <!-- purchase heading -->
-            <h3 class="card-title text-light">Purchase Table</h3>
+      <span
+        class="float-right px-2 purchase-list"
+        v-show="mode=='invoice'"
+        @click="mode= 'purchase'"
+      >Purchase List</span>
+    </div>
+    <!-- Display all purchase in table -->
+    <div class="col-12 mx-auto" v-if="mode != 'invoice'">
+      <!-- display all purchase -->
+      <div class="card">
+        <div class="card-header" style="background: #563D7C">
+          <!-- purchase heading -->
+          <h3 class="card-title text-light">Purchase Table</h3>
 
-            <div class="card-tools">
-              <table>
-                <tr>
-                  <td>
-                    <!-- Product Search -->
-                    <div class="input-group float-right">
-                      <input
-                        type="text"
-                        class="form-control text-light"
-                        style="background: #563D7C"
-                        placeholder="Search Product"
-                      />
-                      <div class="input-group-append">
-                        <span class="btn btn-outline-light">Search</span>
-                      </div>
+          <div class="card-tools">
+            <table>
+              <tr>
+                <td>
+                  <!-- Product Search -->
+                  <div class="input-group float-right">
+                    <input
+                      type="text"
+                      class="form-control text-light"
+                      style="background: #563D7C"
+                      placeholder="Search Product"
+                    />
+                    <div class="input-group-append">
+                      <span class="btn btn-outline-light">Search</span>
                     </div>
-                  </td>
-                  <td>
-                    <router-link to="purchase" class="ml-3 btn btn-outline-warning">Purchase Product</router-link>
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </div>
-          <!-- /.card-header -->
-          <div class="card-body p-0">
-            <table class="table table-hover">
-              <tbody>
-                <tr class="bg-primary">
-                  <th>Purchase No</th>
-                  <th>Supplier</th>
-                  <th>Purchase By</th>
-                  <th>Total Quantity</th>
-                  <th>Total Price</th>
-                  <th>Date</th>
-                  <th>Action</th>
-                </tr>
-                <tr v-for="(purchase, index) in purchases.data" :key="index">
-                  <td class="greenHover" @click="showInvoice(purchase)">{{ purchase.pur_inv_no }}</td>
-                  <td style="text-transform: capitalize;">{{ purchase.supplier.name }}</td>
-                  <td
-                    style="text-transform: capitalize;"
-                  >{{ purchase.user.first_name }} {{ purchase.user.last_name }}</td>
-                  <td>{{ purchase.totalQty }}</td>
-                  <td>{{ purchase.grandTotal | bdCurrency }} Tk.</td>
-                  <td>{{ purchase.created_at | myDate }}</td>
-                  <td>
-                    <a href="#" @click="showInvoice(purchase)" title="View Invoice">
-                      <i class="fas fa-eye" style="font-size: 20px;"></i>
-                    </a>
-                    <a href="#" @click="editPurchase(purchase)">
-                      <i class="fas fa-edit green" style="font-size: 20px;"></i>
-                    </a>
-                    <a href="#" @click="deletePurchase(purchase)">
-                      <i class="fas fa-trash red" style="font-size: 20px;"></i>
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
+                  </div>
+                </td>
+                <td>
+                  <router-link to="purchase" class="ml-3 btn btn-outline-warning">Purchase Product</router-link>
+                </td>
+              </tr>
             </table>
           </div>
-
-          <!-- pagination -->
-          <div class="card-footer">
-            <pagination :data="purchases" @pagination-change-page="getResults"></pagination>
-          </div>
-          <!-- /.card-body -->
         </div>
-        <!-- /.card -->
-      </div>
-      <!-- Display all purchase in table -->
+        <!-- /.card-header -->
+        <div class="card-body p-0">
+          <table class="table table-hover">
+            <tbody>
+              <tr class="bg-primary">
+                <th>Purchase No</th>
+                <th>Supplier</th>
+                <th>Purchase By</th>
+                <th>Total Quantity</th>
+                <th>Total Price</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+              <tr v-for="(purchase, index) in purchases.data" :key="index">
+                <td class="greenHover" @click="showInvoice(purchase)">{{ purchase.pur_inv_no }}</td>
+                <td style="text-transform: capitalize;">{{ purchase.supplier.name }}</td>
+                <td
+                  style="text-transform: capitalize;"
+                >{{ purchase.user.first_name }} {{ purchase.user.last_name }}</td>
+                <td>{{ purchase.totalQty }}</td>
+                <td>{{ purchase.grandTotal | bdCurrency }} Tk.</td>
+                <td>{{ purchase.created_at | myDate }}</td>
+                <td>
+                  <a href="#" @click="showInvoice(purchase)" title="View Invoice">
+                    <i class="fas fa-eye" style="font-size: 20px;"></i>
+                  </a>
+                  <a href="#" @click="editPurchase(purchase)">
+                    <i class="fas fa-edit green" style="font-size: 20px;"></i>
+                  </a>
+                  <a href="#" @click="deletePurchase(purchase)">
+                    <i class="fas fa-trash red" style="font-size: 20px;"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-      <!-- Invoice -->
-      <purchase-invoice class="text-dark mx-auto" v-else></purchase-invoice>
-      <!-- <div class="col-12 mb-3" id="invoice" v-else>
+        <!-- pagination -->
+        <div class="card-footer">
+          <pagination :data="purchases" @pagination-change-page="getResults"></pagination>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </div>
+    <!-- Display all purchase in table -->
+
+    <!-- Invoice -->
+    <purchase-invoice v-bind:invoice="invoice" class="text-dark w-100" v-else></purchase-invoice>
+    <!-- <div class="col-12 mb-3" id="invoice" v-else>
         <div class="card p-5">
           <div>
             <div class="row">
@@ -195,9 +194,8 @@
             </div>
           </div>
         </div>
-      </div>-->
-      <!-- End Invoice -->
-    </div>
+    </div>-->
+    <!-- End Invoice -->
   </div>
 </template>
 
@@ -247,7 +245,27 @@ export default {
       $("body")
         .empty()
         .html(printcontent);
-      window.print();
+      // window.print();
+      if (window.print()) {
+        // var restorepage = $("body").html();
+        // var printcontent = $("#" + el).clone();
+        // var enteredtext = $("#invoice").val();
+        // $("body")
+        //   .empty()
+        //   .html(printcontent);
+      } else {
+        var restorepage = $("body").html();
+        var printcontent = $("#invoice").clone();
+        $("body")
+          .empty()
+          .html(printcontent);
+        // this.showInvoice(purchase);
+        // document.body.style.visibility = "false";
+        // document.getElementById("invoice").style.position = "";
+        // document.getElementById("invoice").style.top = "";
+        // document.getElementById("invoice").style.left = "";
+        alert("Print Canceled");
+      }
     },
     // delete purchase
     deletePurchase(purchase) {

@@ -340,7 +340,8 @@ export default {
         total += this.shopItems[i].quantity * this.shopItems[i].price;
         quantity += this.shopItems[i].quantity;
       }
-      this.grandTotal = quantity;
+      this.grandTotal = total;
+      this.totalQuantity = quantity;
     },
 
     // add new item to list
@@ -379,7 +380,8 @@ export default {
     checkAndAddItem(obj) {
       for (var i = 0; i < this.shopItems.length; i++) {
         if (this.shopItems[i].productName === obj.productName) {
-          this.shopItems[i].quantity++;
+          this.shopItems[i].quantity =
+            parseInt(this.shopItems[i].quantity) + parseInt(obj.quantity);
           return;
         }
       }
@@ -416,45 +418,62 @@ export default {
           title: "Item can not be null"
         });
       } else {
-        axios(
-          this.mode != "purchae"
-            ? {
-                method: "put",
-                url: "api/purchase/" + this.prop_data.pur_inv_no,
-                data: {
-                  shopItems: JSON.stringify(this.shopItems),
-                  supplierInfo: JSON.stringify(this.supplierInfo),
-                  oldPurchase: JSON.stringify(this.prop_data)
-                }
-              }
-            : {
-                method: "post",
-                url: "api/purchase",
-                data: {
-                  shopItems: JSON.stringify(this.shopItems),
-                  supplierInfo: JSON.stringify(this.supplierInfo)
-                }
-              }
-        )
-          .then(() => {
-            this.mode != "purchae" ? $message = "Purchase Update Successfull" : $message = "Purchase create Successfull"
-            Fire.$emit("AfterAction");
-            toast.fire({
-              type: "success",
-              title: $message
-            });
-            this.$Progress.finish();
-
-            // reset all data
-            this.clearAll();
+        if (this.mode == "purchase") {
+          axios({
+            method: "post",
+            url: "api/purchase",
+            data: {
+              shopItems: JSON.stringify(this.shopItems),
+              supplierInfo: JSON.stringify(this.supplierInfo)
+            }
           })
-          .catch(() => {
-            this.$Progress.fail();
-            toast.fire({
-              type: "error",
-              title: "Products purchase failed"
+            .then(() => {
+              this.$Progress.finish();
+              Fire.$emit("AfterAction");
+              toast.fire({
+                type: "success",
+                title: "Purchase create Successfull"
+              });
+
+              // reset all data
+              this.clearAll();
+            })
+            .catch(res => {
+              this.$Progress.fail();
+              toast.fire({
+                type: "error",
+                title: "Products purchase failed" + res
+              });
             });
-          });
+        } else {
+          axios({
+            method: "put",
+            url: "api/purchase/" + this.prop_data.pur_inv_no,
+            data: {
+              shopItems: JSON.stringify(this.shopItems),
+              supplierInfo: JSON.stringify(this.supplierInfo),
+              oldPurchase: JSON.stringify(this.prop_data)
+            }
+          })
+            .then(() => {
+              this.$Progress.finish();
+              Fire.$emit("AfterAction");
+              toast.fire({
+                type: "success",
+                title: "Purchase Update Successfull"
+              });
+
+              // reset all data
+              this.clearAll();
+            })
+            .catch(res => {
+              this.$Progress.fail();
+              toast.fire({
+                type: "error",
+                title: "Products purchase failed " + res
+              });
+            });
+        }
       }
     }
   } // end method

@@ -4,7 +4,10 @@
       <div class="col-12 mx-0">
         <!-- sale -->
         <div style="background: #563D7C">
-          <h5 class="text-light pl-3" style="line-height: 35px">Sale Product</h5>
+          <h5
+            class="text-light pl-3"
+            style="line-height: 35px"
+          >{{ mode == 'sale' ? "Sale Product" : "Sale Edit" }}</h5>
         </div>
 
         <!-- Customer info -->
@@ -175,7 +178,11 @@
 
           <!-- submit or sale products -->
           <div class="col-12 text-right">
-            <button type="submit" @click="saleProduct()" class="btn btn-primary btn-sm">Sale</button>
+            <button
+              type="submit"
+              @click="saleProduct()"
+              class="btn btn-primary btn-sm"
+            >{{ mode == "sale" ? "Sale" : "Update Sale" }}</button>
           </div>
         </div>
       </div>
@@ -194,10 +201,12 @@ export default {
   components: {
     CoolSelect
   },
+  props: ["prop_data"],
 
   // all data
   data() {
     return {
+      mode: "sale",
       customers: [],
       customer: "",
       prices: [],
@@ -217,9 +226,9 @@ export default {
 
       customerInfo: {
         cashSale: false,
-        customerName: "",
-        customerMobile: "",
-        customerAddress: "",
+        name: "",
+        mobile: "",
+        address: "",
         totalQuantity: 0,
         grandTotal: 0
       },
@@ -249,6 +258,31 @@ export default {
 
   // mounted
   mounted() {
+    if (this.prop_data) {
+      this.mode = "sale edit";
+      this.customer = this.prop_data.customer.name;
+
+      let prop_product = this.prop_data.sale_items;
+      for (let i = 0; i < prop_product.length; i++) {
+        this.form.productName = prop_product[i].product.name;
+        this.form.product_code = prop_product[i].product_code;
+        this.form.quantity = prop_product[i].quantity;
+        this.form.price = prop_product[i].price;
+
+        this.shopItems.push(this.form);
+        this.form = {};
+      }
+      var total = 0;
+      var quantity = 0;
+      for (var i = 0; i < Object.keys(this.shopItems).length; i++) {
+        total += this.shopItems[i].quantity * this.shopItems[i].price;
+        quantity += parseInt(this.shopItems[i].quantity);
+      }
+      this.grandTotal = total;
+      this.totalQuantity = quantity;
+    } else {
+      this.mode = "sale";
+    }
     // load customers
     axios.get("api/customer-list").then(({ data }) => {
       for (var i = 0; i < data.length; i++) {
@@ -286,9 +320,9 @@ export default {
       this.selectedQuantity = 0;
       this.selectedProductCode = "";
 
-      this.customerInfo.customerName = "";
-      this.customerInfo.customerMobile = "";
-      this.customerInfo.customerAddress = "";
+      this.customerInfo.name = "";
+      this.customerInfo.mobile = "";
+      this.customerInfo.address = "";
       this.customerInfo.totalQuantity = 0;
       this.customerInfo.grandTotal = 0;
     },
@@ -302,7 +336,8 @@ export default {
         total += this.shopItems[i].quantity * this.shopItems[i].price;
         quantity += this.shopItems[i].quantity;
       }
-      this.grandTotal = quantity;
+      this.grandTotal = total;
+      this.totalQuantity = quantity;
     },
 
     // add new item to list
@@ -341,7 +376,8 @@ export default {
     checkAndAddItem(obj) {
       for (var i = 0; i < this.shopItems.length; i++) {
         if (this.shopItems[i].productName === obj.productName) {
-          this.shopItems[i].quantity++;
+          this.shopItems[i].quantity =
+            parseInt(this.shopItems[i].quantity) + parseInt(obj.quantity);
           return;
         }
       }
@@ -364,10 +400,10 @@ export default {
       this.customerInfo.totalQuantity = this.totalQuantity;
 
       if (!this.cashSale) {
-        this.customerInfo.customerName = this.customer;
+        this.customerInfo.name = this.customer;
       }
 
-      if (this.customerInfo.customerName == null) {
+      if (this.customerInfo.name == null) {
         toast.fire({
           type: "error",
           title: "Fill Customer"
@@ -378,33 +414,60 @@ export default {
           title: "Item can not be null"
         });
       } else {
-        axios({
-          method: "post",
-          url: "api/sale",
-          data: {
-            // pass to object
-            shopItems: JSON.stringify(this.shopItems),
-            customerInfo: JSON.stringify(this.customerInfo)
-          }
-        })
-          .then(() => {
-            Fire.$emit("AfterAction");
-            toast.fire({
-              type: "success",
-              title: "Products sale successfully"
-            });
-            this.$Progress.finish();
-
-            // reset all data
-            this.clearAll();
+        if (this.mode == "sale") {
+          axios({
+            method: "post",
+            url: "api/sale",
+            data: {
+              shopItems: JSON.stringify(this.shopItems),
+              customerInfo: JSON.stringify(this.customerInfo)
+            }
           })
-          .catch(() => {
-            this.$Progress.fail();
-            toast.fire({
-              type: "error",
-              title: "Products sale failed"
+            .then(() => {
+              this.$Progress.finish();
+              Fire.$emit("AfterAction");
+              toast.fire({
+                type: "success",
+                title: "Sale create Successfull"
+              });
+              // reset all data
+              this.clearAll();
+            })
+            .catch(res => {
+              this.$Progress.fail();
+              toast.fire({
+                type: "error",
+                title: "Products Sale failed" + res
+              });
             });
-          });
+        } else {
+          axios({
+            method: "put",
+            url: "api/sale/" + this.prop_data.sale_inv_no,
+            data: {
+              shopItems: JSON.stringify(this.shopItems),
+              customerInfo: JSON.stringify(this.customerInfo),
+              oldSale: JSON.stringify(this.prop_data)
+            }
+          })
+            .then(() => {
+              this.$Progress.finish();
+              Fire.$emit("AfterAction");
+              toast.fire({
+                type: "success",
+                title: "Sale Update Successfull"
+              });
+              // reset all data
+              this.clearAll();
+            })
+            .catch(res => {
+              this.$Progress.fail();
+              toast.fire({
+                type: "error",
+                title: "Products purchase failed " + res
+              });
+            });
+        }
       }
     }
   } // end method

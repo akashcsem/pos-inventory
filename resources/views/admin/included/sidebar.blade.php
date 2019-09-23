@@ -39,15 +39,7 @@
             </p>
           </router-link>
         </li>
-        <!-- Point -->
-        <li class="nav-item">
-          <router-link to="point" class="nav-link">
-            <i class="nav-icon fas fa-warehouse teal"></i>
-            <p>
-              Points
-            </p>
-          </router-link>
-        </li>
+        
         <!-- Product -->
         <li class="nav-item has-treeview">
           <a href="#" class="nav-link">
@@ -66,7 +58,15 @@
                 <p>Unit</p>
               </router-link>
             </li>
-
+            <!-- Point -->
+            <li class="nav-item">
+              <router-link to="brand" class="nav-link">
+                <i class="nav-icon fas fa-warehouse teal"></i>
+                <p>
+                  Brands
+                </p>
+              </router-link>
+            </li>
             {{-- Categories --}}
             <li class="nav-item">
               <router-link to="category" class="nav-link">

@@ -74,7 +74,7 @@
                     <a href="#" @click="showInvoice(sale)" title="View Invoice">
                       <i class="fas fa-eye" style="font-size: 20px;"></i>
                     </a>
-                    <a href="#">
+                    <a href="#" @click="editSale(sale)">
                       <i class="fas fa-edit green" style="font-size: 20px;"></i>
                     </a>
                     <a href="#" @click="deleteSale(sale)">
@@ -108,7 +108,7 @@
                   <br />
                   <b>Dhaka, Bangladesh</b>
                   <br />
-                  <b>017xxxxxxxx</b>
+                  <b>01976829262</b>
                 </p>
               </div>
               <div class="col-md-6 text-right">
@@ -244,6 +244,9 @@ export default {
     showInvoice(sale) {
       this.invoice = sale;
       this.mode = "invoice";
+    },
+    editSale(prop_data) {
+      this.$router.push({ name: "sale", params: { prop_data } });
     },
     printInvoice(el) {
       var restorepage = $("body").html();

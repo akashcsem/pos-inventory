@@ -15,15 +15,6 @@
         <th>Credit</th>
         <th>Stock</th>
       </tr>
-      <tr>
-        <td>1</td>
-        <td>Opening Stock</td>
-        <td></td>
-        <td>{{ product.created_at | myDate }}</td>
-        <td>0</td>
-        <td>{{ product.opening_stock }}</td>
-        <td>{{ product.opening_stock }}</td>
-      </tr>
       <tr v-for="(stock, index) in stocks" :key="index">
         <td>{{ index + 2 }}</td>
         <td>{{ stock.description }}</td>
@@ -60,7 +51,7 @@ export default {
         credit += this.stocks[i].credit;
       }
 
-      return this.product.opening_stock + credit - debit;
+      return credit - debit;
     },
     loadProducts() {
       if (this.prop_data) {

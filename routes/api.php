@@ -19,6 +19,7 @@ Route::apiResources([
     'point'             => 'API\PointController',
     'unit'              => 'API\UnitController',
     'category'          => 'API\CategoryController',
+    'brand'             => 'API\BrandController',
     'product'           => 'API\ProductController',
     'supplier'          => 'API\SupplierController',
     'customer'          => 'API\CustomerController',
@@ -41,6 +42,7 @@ Route::get('/supplier/search/{search}', 'API\SupplierController@searchSupplier')
 // product
 Route::get('product-list', 'API\ProductController@product_list');
 Route::get('/product/single/{product_code}', 'API\ProductController@getProduct');
+Route::get('/product/paginate/{item}', 'API\ProductController@paginateProduct');
 Route::get('/product/select/{select}', 'API\ProductController@selectedProduct');
 Route::get('/product/{perPage}/filter/{order}/order/{orderField}/as', 'API\ProductController@filterProduct');
 Route::get('/product/search/{search}', 'API\ProductController@searchProduct');

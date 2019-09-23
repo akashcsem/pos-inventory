@@ -59,7 +59,7 @@
           </div>
 
           <!-- /.card-header -->
-          <div class="card-body table-responsive p-0">
+          <div class="card-body table-responsive p-0" v-if="products.data.length">
             <table class="table table-hover">
               <tbody>
                 <tr class="bg-primary">
@@ -85,11 +85,11 @@
                       :class="{'fa-sort': orderField != 'category', 'fa-sort-up': orderField=='category' && order=='asc', 'fa-sort-down': orderField=='category' && order=='desc'}"
                     ></i>
                   </th>
-                  <th class="cursor" @click="setOrder('quantity')">
-                    Quantity
+                  <th class="cursor" @click="setOrder('opening_stock')">
+                    Opening Stock
                     <i
                       class="fa"
-                      :class="{'fa-sort': orderField != 'quantity', 'fa-sort-up': orderField=='quantity' && order=='asc', 'fa-sort-down': orderField=='quantity' && order=='desc'}"
+                      :class="{'fa-sort': orderField != 'opening_stock', 'fa-sort-up': orderField=='opening_stock' && order=='asc', 'fa-sort-down': orderField=='opening_stock' && order=='desc'}"
                     ></i>
                   </th>
                   <th class="cursor" @click="setOrder('unit')">
@@ -112,7 +112,7 @@
                     <a href="#" @click="editModal(product)">
                       <i class="fas fa-edit green" style="font-size: 25px;"></i>
                     </a> &nbsp;
-                    <a href="#" @click="deleteProduct(product.id)">
+                    <a href="#" @click="deleteProduct(product.product_code)">
                       <i class="fas fa-trash red" style="font-size: 25px;"></i>
                     </a>
                   </td>
@@ -120,7 +120,17 @@
               </tbody>
             </table>
           </div>
-          <div class="card-footer">
+
+          <!-- if prodcut empty -->
+          <div v-else class="text-center py-3">
+            <h3>No Product created.</h3>
+            <p
+              class="text-primary"
+              style="cursor: pointer"
+              @click="newModal"
+            >Please create a product</p>
+          </div>
+          <div class="card-footer" v-if="products.data.length > 0">
             From {{ products.from }} To {{ products.to }} of {{ products.total }} items
             <pagination :data="products" @pagination-change-page="getResults" class="float-right"></pagination>
           </div>
@@ -212,7 +222,7 @@
 
                 <!-- opening stock -->
                 <div class="form-group col-md-6">
-                  <label for="opening_stock">Product Quantity</label>
+                  <label for="opening_stock">Opening Stock</label>
                   <input
                     v-model="form.opening_stock"
                     type="number"
@@ -291,6 +301,7 @@ export default {
       category_items: [],
 
       editMode: false,
+      loadCategories: false,
       categories: {},
       products: {},
       units: {},
@@ -355,21 +366,36 @@ export default {
     },
     getResults(page = 1) {
       axios
-        .get("api/product/paginate/" + this.perPage + "?page=" + page)
+        .get("api/product/paginate" + this.perPage + "?page=" + page)
         // .get("api/product?page=" + page + "&" + "item=" + this.perPage)
         .then(response => {
           this.products = response.data;
           // console.log("paginate");
         });
     },
+    // modal for edit product
     editModal(product) {
       this.editMode = true;
       this.form.reset();
+      if (!this.loadCategories) {
+        axios
+          .get("api/category-list")
+          .then(({ data }) => (this.categories = data.data));
+        axios.get("api/unit-list").then(({ data }) => (this.units = data.data));
+        this.loadCategories = true;
+      }
       $("#addModal").modal("show");
       this.form.fill(product);
-      this.showImage = "product/" + this.form.image;
     },
+    // modal for create new product
     newModal() {
+      if (!this.loadCategories) {
+        axios
+          .get("api/category-list")
+          .then(({ data }) => (this.categories = data.data));
+        axios.get("api/unit-list").then(({ data }) => (this.units = data.data));
+        this.loadCategories = true;
+      }
       var category = this.categories;
       for (var i = 0; i < Object.keys(category).length; i++) {
         this.category_items.push(category[i]["name"]);
@@ -379,7 +405,7 @@ export default {
       this.form.reset();
       $("#addModal").modal("show");
     },
-    deleteProduct(id) {
+    deleteProduct(product_code) {
       swal
         .fire({
           title: "Are you sure?",
@@ -392,7 +418,7 @@ export default {
         .then(result => {
           if (result.value) {
             this.form
-              .delete("api/product/" + id)
+              .delete("api/product/" + product_code)
               .then(() => {
                 toast.fire({
                   type: "success",
@@ -406,14 +432,11 @@ export default {
           }
         });
     },
+    // load product when page initial
     loadProducts() {
       axios.get("api/product").then(({ data }) => (this.products = data));
-      // console.log("get initial");
-      axios
-        .get("api/category-list")
-        .then(({ data }) => (this.categories = data.data));
-      axios.get("api/unit-list").then(({ data }) => (this.units = data.data));
     },
+    // Search product
     search_product() {
       if (this.search != "") {
         axios
@@ -423,10 +446,11 @@ export default {
         this.loadProducts();
       }
     },
+    // Update product
     updateProduct() {
       this.$Progress.start();
       this.form
-        .put("api/product/" + this.form.id)
+        .put("api/product/" + this.form.product_code)
         .then(() => {
           // success action
           Fire.$emit("AfterAction");
@@ -445,6 +469,7 @@ export default {
           this.$Progress.fail();
         });
     },
+    // create new product
     createProduct() {
       this.$Progress.start();
       this.form

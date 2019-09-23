@@ -78,9 +78,6 @@
                     <a href="#" @click="showInvoice(purchase)" title="View Invoice">
                       <i class="fas fa-eye" style="font-size: 20px;"></i>
                     </a>
-                    <a href="#">
-                      <i class="fas fa-edit green" style="font-size: 20px;"></i>
-                    </a>
                     <a href="#" @click="deletePurchaseReturn(purchase.pur_rtn_no)">
                       <i class="fas fa-trash red" style="font-size: 20px;"></i>
                     </a>

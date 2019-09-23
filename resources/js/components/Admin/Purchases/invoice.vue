@@ -2,7 +2,7 @@
 <template>
   <div id="invoice">
     <!-- invoice area page 1 -->
-    <div class="page">
+    <div class="page w-100">
       <div class="subpage p-0">
         <div class="header">
           <h2 class="text-center mb-0 pb-0">Invoice</h2>
@@ -13,13 +13,15 @@
         <div class="row mb-4">
           <div class="col-sm-6">
             <h6 class="mb-3">From:</h6>
-            <div>
-              <strong>Webz Poland</strong>
+            <div v-if="invoice.company_name">
+              <strong>Company: {{ invoice.company_name }}</strong>
             </div>
-            <div>Madalinskiego 8</div>
-            <div>71-101 Szczecin, Poland</div>
-            <div>Email: info@webz.com.pl</div>
-            <div>Phone: +48 444 666 3333</div>
+            <div>
+              <strong>{{ invoice.company_name !=NUll ? 'Propitor : ' : 'Supplier :' }} {{ invoice.supplier.name }}</strong>
+            </div>
+            <div v-if="invoice.email">Email: {{ invoice.email }}</div>
+            <div v-if="invoice.mobile">Phone: {{ invoice.mobile }}</div>
+            <div v-if="invoice.address">{{ invoice.address }}</div>
           </div>
         </div>
 
@@ -27,200 +29,22 @@
         <div class="row">
           <div class="table-responsive-sm col-12">
             <table class="table table-sm table-striped">
-              <thead>
+              <thead class="px-2">
                 <tr>
-                  <th class="center">#</th>
-                  <th>Item</th>
-                  <th>Description</th>
-
+                  <th class="center pl-3">#</th>
+                  <th>Product</th>
+                  <th>Price</th>
                   <th class="center">Qty</th>
                   <th class="right">Total</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td class="center">1</td>
-                  <td class="left strong">Origin License</td>
-
-                  <td class="right">$999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">2</td>
-                  <td class="left">Custom Services</td>
-
-                  <td class="right">$150,00</td>
-                  <td class="center">20</td>
-                  <td class="right">$3.000,00</td>
-                </tr>
-                <tr>
-                  <td class="center">3</td>
-                  <td class="left">Hosting</td>
-
-                  <td class="right">$499,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$499,00</td>
-                </tr>
-                <tr>
-                  <td class="center">4</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">4</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">4</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">4</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">4</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">4</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">4</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">4</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">4</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">4</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">4</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">4</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">5</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">6</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">7</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">8</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">9</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">10</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">11</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
-                </tr>
-                <tr>
-                  <td class="center">12</td>
-                  <td class="left">Platinum Support</td>
-
-                  <td class="right">$3.999,00</td>
-                  <td class="center">1</td>
-                  <td class="right">$3.999,00</td>
+                <tr v-for="(item,index) in invoice.purchase_items" :key="index">
+                  <td class="center pl-3">{{ index+1 }}</td>
+                  <td class="left strong">{{ item.product.name }}</td>
+                  <td class="right">{{ item.price }}</td>
+                  <td class="center">{{ item.quantity }}</td>
+                  <td class="right">{{ item.price * item.quantity }}</td>
                 </tr>
               </tbody>
             </table>
@@ -228,35 +52,70 @@
         </div>
 
         <div class="row">
-          <div class="col-lg-4 col-sm-5"></div>
+          <!-- Payment section -->
+          <div class="col-lg-3 col-md-4 col-sm-5">
+            <table class="table table-sm table-bordered table-clear">
+              <tbody>
+                <tr>
+                  <td class="left">
+                    <strong>Previous Due</strong>
+                  </td>
+                  <td class="right">Tk. {{ 4500 }}</td>
+                </tr>
+                <tr>
+                  <td class="left">
+                    <strong>Invoice Amount</strong>
+                  </td>
+                  <td
+                    class="right"
+                  >Tk. {{ invoice.grandTotal - invoice.discount + ((invoice.grandTotal * 4) / 100) }}</td>
+                </tr>
+                <tr>
+                  <td class="left">
+                    <strong>Collection</strong>
+                  </td>
+                  <td class="right">Tk. (-) {{ 200 }}</td>
+                </tr>
+                <tr style="border-top: 2px solid gray">
+                  <td class="left">
+                    <strong>Total Due</strong>
+                  </td>
+                  <td class="right">
+                    <strong>Tk. {{ invoice.supplier.opening_balance + (invoice.grandTotal - invoice.discount + ((invoice.grandTotal * 4) / 100)) - 200 }}</strong>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-          <div class="col-lg-4 col-sm-6 ml-auto">
+          <!-- Total calculate section -->
+          <div class="col-lg-3 col-md-4 col-sm-4 ml-auto">
             <table class="table table-sm table-bordered table-clear">
               <tbody>
                 <tr>
                   <td class="left">
                     <strong>Subtotal</strong>
                   </td>
-                  <td class="right">$8.497,00</td>
+                  <td class="right">Tk. {{ invoice.grandTotal }}</td>
                 </tr>
                 <tr>
                   <td class="left">
-                    <strong>Discount (20%)</strong>
+                    <strong>Discount</strong>
                   </td>
-                  <td class="right">$1,699,40</td>
+                  <td class="right">Tk. {{ invoice.discount }}</td>
                 </tr>
                 <tr>
                   <td class="left">
-                    <strong>VAT (10%)</strong>
+                    <strong>VAT/Tax (4%)</strong>
                   </td>
-                  <td class="right">$679,76</td>
+                  <td class="right">Tk. {{ (invoice.grandTotal * 4) / 100 }}</td>
                 </tr>
-                <tr>
+                <tr style="border-top: 2px solid gray">
                   <td class="left">
                     <strong>Total</strong>
                   </td>
                   <td class="right">
-                    <strong>$7.477,36</strong>
+                    <strong>Tk. {{ invoice.grandTotal - invoice.discount + ((invoice.grandTotal * 4) / 100) }}</strong>
                   </td>
                 </tr>
               </tbody>
@@ -278,7 +137,7 @@
     </div>
 
     <!-- page 2 -->
-    <div class="page">
+    <div class="page" v-if="(invoice.purchase_items).length > 15">
       <div class="subpage">
         <div class="header my-0 py-0">
           <h2 class="text-center mb-0 pb-0">Invoice</h2>
@@ -395,7 +254,14 @@
 
 
 <script>
-export default {};
+export default {
+  props: ["invoice"],
+  data() {
+    return {
+      x: ""
+    };
+  }
+};
 </script>
 
 <style scoped>

@@ -8,7 +8,6 @@ use App\Model\Others\Supplier;
 use App\Model\Others\SupplierDetail;
 use App\Model\Purchase\Purchase;
 use App\Model\Purchase\PurchaseDetail;
-use App\Model\Stocks\Stock;
 use App\Model\Stocks\StockDetail;
 use App\UpdateData;
 
@@ -185,7 +184,7 @@ class PurchaseController extends Controller
                     ->where('product_code', '=', $item->product_code)->first();
                 $purchase->delete();
             } else {
-                (new UpdateData())->updateStock('+', $item->product_code, ($item->quantity - $shop_quantity));
+                (new UpdateData())->updateStock('+', $item->product_code, ($shop_quantity - $item->quantity));
             }
         }
         return "Update " . $oldPurchase->pur_inv_no . "Successfull";

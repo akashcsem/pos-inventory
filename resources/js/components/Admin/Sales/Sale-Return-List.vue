@@ -75,9 +75,6 @@
                     <a href="#" @click="showInvoice(sale)" title="View Invoice">
                       <i class="fas fa-eye" style="font-size: 20px;"></i>
                     </a>
-                    <a href="#">
-                      <i class="fas fa-edit green" style="font-size: 20px;"></i>
-                    </a>
                     <a href="#" @click="deleteSaleReturn(sale.sale_rtn_no)">
                       <i class="fas fa-trash red" style="font-size: 20px;"></i>
                     </a>

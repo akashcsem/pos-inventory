@@ -4,10 +4,12 @@ namespace App\Http\Controllers\API\Sale;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Model\Others\Customer;
 use App\Model\Others\CustomerDetail;
 use App\Model\Sale\Sale;
 use App\Model\Sale\SaleReturn;
 use App\Model\Sale\SaleReturnDetail;
+use App\UpdateData;
 
 class SaleReturnController extends Controller
 {
@@ -56,7 +58,7 @@ class SaleReturnController extends Controller
         $customer_id    = Customer::where('name', '=', $returnInfo->customer)->first()->id;
         $grand_total    = $returnInfo->grandTotal - $discount;
 
-        $saleReturn      = SaleReturn::create([
+        $saleReturn        = SaleReturn::create([
             'sale_rtn_no'  => '124',
             'user_id'      => $user_id,
             'customer_id'  => $customer_id,

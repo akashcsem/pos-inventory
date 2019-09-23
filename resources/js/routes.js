@@ -2,7 +2,7 @@
 import Dashboard from "./components/Admin/Dashboard";
 import User from "./components/Admin/User";
 import Category from "./components/Admin/Category";
-import Point from "./components/Admin/Point";
+import Brand from "./components/Admin/Brand";
 import Unit from "./components/Admin/Unit";
 import Customer from "./components/Admin/Customer";
 import Supplier from "./components/Admin/Supplier";
@@ -29,9 +29,9 @@ export default [
     { path: "/dashboard", component: Dashboard, meta: { title: "Dashboard" } },
     { path: "/user", component: User, meta: { title: "User" } },
     { path: "/category", component: Category, meta: { title: "Category" } },
+    { path: "/brand", component: Brand, meta: { title: "Brand" } },
     { path: "/product", component: Product, meta: { title: "Product" } },
     { path: "/supplier", component: Supplier, meta: { title: "Supplier" } },
-    { path: "/point", component: Point, meta: { title: "Point" } },
     { path: "/unit", component: Unit, meta: { title: "Unit" } },
     { path: "/customer", component: Customer, meta: { title: "Customer" } },
 
@@ -57,7 +57,13 @@ export default [
         component: SaleR,
         meta: { title: "Sales Return" }
     },
-    { path: "/sale", component: Sale, meta: { title: "Sale" } },
+    {
+        path: "/sale",
+        name: "sale",
+        component: Sale,
+        meta: { title: "Sale" },
+        props: true
+    },
     {
         path: "/sale-list",
         component: SaleL,

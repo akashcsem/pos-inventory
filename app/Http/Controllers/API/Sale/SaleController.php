@@ -8,6 +8,8 @@ use App\Model\Others\Customer;
 use App\Model\Others\CustomerDetail;
 use App\Model\Sale\Sale;
 use App\Model\Sale\SaleDetail;
+use App\Model\Stocks\StockDetail;
+use App\UpdateData;
 
 class SaleController extends Controller
 {
@@ -43,7 +45,7 @@ class SaleController extends Controller
         $discount       = 0;
 
         $user_id        = auth('api')->user()->id;
-        $customer_id    = Customer::where('name', '=', $customerInfo->customerName)->first()->id;
+        $customer_id    = Customer::where('name', '=', $customerInfo->name)->first()->id;
         $grand_total    = $customerInfo->grandTotal - $discount;
 
         $sale = Sale::create([
@@ -59,9 +61,9 @@ class SaleController extends Controller
 
         if ($customerInfo->cashSale) {
             $sale->sale_inv_no  = $invoice_number;
-            $sale->name         = $customerInfo->customerName;
-            $sale->mobile       = $customerInfo->customerMobile;
-            $sale->address      = $customerInfo->customerAddress;
+            $sale->name         = $customerInfo->name;
+            $sale->mobile       = $customerInfo->mobile;
+            $sale->address      = $customerInfo->address;
         } else {
             $sale->customer_id  = $customer_id;
             $sale->sale_inv_no  = $invoice_number;
@@ -102,10 +104,85 @@ class SaleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $sale_inv_no)
     {
-        //
+        $oldSale       = json_decode($request->oldSale);
+        $customerInfo  = json_decode($request->customerInfo);
+        $shopItems     = json_decode($request->shopItems);
+        $customer_id   = Customer::where('name', '=', $customerInfo->name)->first()->id;
+
+
+        Sale::where('sale_inv_no', $sale_inv_no)
+            ->update(
+                [
+                    'customer_id'  => $customer_id,
+                    'totalQty'     => $customerInfo->totalQuantity,
+                    'subTotal'     => $customerInfo->grandTotal,
+                    'grandTotal'   => $customerInfo->grandTotal,
+                ]
+            );
+
+        CustomerDetail::where('customer_id', '=', $oldSale->id)
+            ->update([
+                'customer_id'   => $customer_id,
+                'debit'         => $customerInfo->grandTotal,
+            ]);
+
+        foreach ($shopItems as $item) {
+            $sale = SaleDetail::where('sale_inv_no', '=', $sale_inv_no)
+                ->where('product_code', '=', $item->product_code)
+                ->update([
+                    'quantity'      => $item->quantity,
+                    'price'         => $item->price,
+                ]);
+            if (!$sale) {
+                SaleDetail::create([
+                    'sale_inv_no'   => $sale_inv_no,
+                    'quantity'      => $item->quantity,
+                    'product_code'  => $item->product_code,
+                    'price'         => $item->price,
+                ]);
+                StockDetail::create([
+                    'product_code' => $item->product_code,
+                    'description'  => "Sale",
+                    'source_id'    => $sale_inv_no,
+                    'debit'        => $item->quantity,
+                ]);
+                (new UpdateData())->updateStock('-', $item->product_code, $item->quantity);
+            } else {
+                StockDetail::where('source_id', '=', $sale_inv_no)
+                    ->where('product_code', '=', $item->product_code)->update([
+                        'debit'       => $item->quantity,
+                    ]);
+            }
+            $sale = null;
+        }
+
+        foreach ($oldSale->sale_items as $item) {
+            $exist = false;
+            $shop_quantity = 0;
+
+            foreach ($shopItems as $shopItem) {
+                if ($shopItem->product_code == $item->product_code) {
+                    $shop_quantity = $shopItem->quantity;
+                    $exist = true;
+                    break;
+                }
+            }
+            if (!$exist) {
+                (new UpdateData())->updateStock('+', $item->product_code, $item->quantity);
+
+                $sale = SaleDetail::where('sale_inv_no', '=', $sale_inv_no)
+                    ->where('product_code', '=', $item->product_code)->first();
+                $sale->delete();
+            } else {
+                (new UpdateData())->updateStock('-', $item->product_code, ($shop_quantity - $item->quantity));
+            }
+        }
+        return "Update " . $oldSale->sale_inv_no . "Successfull";
     }
+
+
 
     /**
      * Remove the specified resource from storage.

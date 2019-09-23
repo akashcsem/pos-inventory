@@ -21,8 +21,8 @@
         <td>{{ product.name }}</td>
         <td>{{ product.product_code }}</td>
         <td>Tk. {{ product.purchase_price }}</td>
-        <td>{{ product.current_stock == null ? product.opening_stock : product.opening_stock + product.current_stock.quantity }}</td>
-        <td>{{ product.current_stock == null ? product.opening_stock * product.purchase_price : (product.opening_stock + product.current_stock.quantity) * product.purchase_price }}</td>
+        <td>{{ product.current_stock.quantity }}</td>
+        <td>{{ product.current_stock.quantity * product.purchase_price }}</td>
       </tr>
     </table>
   </div>
