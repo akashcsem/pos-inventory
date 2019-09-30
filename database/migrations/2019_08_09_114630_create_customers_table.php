@@ -20,7 +20,7 @@ class CreateCustomersTable extends Migration
             $table->string('mobile');
             $table->string('address')->nullable();
             $table->integer('user_id');
-            $table->string('opening_balance')->default(0);
+            $table->decimal('opening_balance')->default(0.00);
             $table->timestamps();
         });
     }

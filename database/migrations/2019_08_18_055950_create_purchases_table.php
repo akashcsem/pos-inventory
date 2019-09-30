@@ -20,6 +20,7 @@ class CreatePurchasesTable extends Migration
             $table->integer('supplier_id');
             $table->integer('totalQty');
             $table->decimal('discount', 15, 3)->default(0);
+            $table->decimal('payment', 15, 2)->default(0.00);
             $table->decimal('tax', 15, 3)->nullable();
             $table->bigInteger('subTotal')->nullable();
             $table->bigInteger('grandTotal');

@@ -20,6 +20,7 @@ class CreateSalesTable extends Migration
             $table->integer('customer_id')->default(1);
             $table->integer('totalQty');
             $table->decimal('discount', 15, 3)->default(0);
+            $table->decimal('collection', 15, 2)->default(0.00);
             $table->decimal('tax', 15, 3)->nullable();
             $table->bigInteger('subTotal')->nullable();
             $table->bigInteger('grandTotal');

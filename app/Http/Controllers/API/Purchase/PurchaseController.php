@@ -29,13 +29,23 @@ class PurchaseController extends Controller
     {
         $purchases = Purchase::join('suppliers', 'suppliers.id', '=', 'purchases.supplier_id')
             ->orderBy('suppliers.name', "asc")
+            ->with('user');
+        return response()->JSON($purchases->paginate(5));
+    }
+    // populate invoice
+    public function getInvoice($pur_inv_no)
+    {
+
+        $invoice = Purchase::join('suppliers', 'suppliers.id', '=', 'purchases.supplier_id')
+            ->orderBy('suppliers.name', "asc")
             ->with('supplier')
             ->with('purchaseItems')
-            ->with('user');
+            ->with('user')
+            ->where('pur_inv_no', '=', $pur_inv_no)
+            ->first();
 
-        return response()->JSON($purchases->paginate(3));
+        return response()->JSON($invoice);
     }
-
     /**
      * Store a newly created resource in storage.
      *

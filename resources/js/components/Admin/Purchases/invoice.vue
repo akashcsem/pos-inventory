@@ -2,11 +2,12 @@
 <template>
   <div id="invoice">
     <!-- invoice area page 1 -->
-    <div class="page w-100">
-      <div class="subpage p-0">
+    <div class="page w-100 mt-0 pt-0">
+      <div class="subpage">
         <div class="header">
           <h2 class="text-center mb-0 pb-0">Invoice</h2>
-          <p>Invoice Date: 25 Sept, 2019</p>
+          <h5>Date: 25 Sept, 2019</h5>
+          <h5>Invoice NO# : {{ invoice.pur_inv_no }}</h5>
         </div>
 
         <!-- supplier details -->
@@ -22,6 +23,16 @@
             <div v-if="invoice.email">Email: {{ invoice.email }}</div>
             <div v-if="invoice.mobile">Phone: {{ invoice.mobile }}</div>
             <div v-if="invoice.address">{{ invoice.address }}</div>
+          </div>
+
+          <!-- supplier details -->
+          <div class="col-sm-5 ml-auto bg-danger">
+            <div v-if="invoice.company_name">
+              <strong>Company: Point Of Sale</strong>
+            </div>
+            <div>Email: asm.akash@gmail.com</div>
+            <div>Phone: 01745501406</div>
+            <div>74, KC school road, Ashkona, Airport, Dhaka</div>
           </div>
         </div>
 
@@ -53,35 +64,36 @@
 
         <div class="row">
           <!-- Payment section -->
-          <div class="col-lg-3 col-md-4 col-sm-5">
+          <div class="col-lg-4 col-md-4 col-sm-4">
             <table class="table table-sm table-bordered table-clear">
               <tbody>
                 <tr>
-                  <td class="left">
+                  <td class="left" width="130px">
                     <strong>Previous Due</strong>
                   </td>
-                  <td class="right">Tk. {{ 4500 }}</td>
+                  <td class="right" style="width: 140px">Tk. {{ invoice.opening_balance }}</td>
                 </tr>
                 <tr>
-                  <td class="left">
+                  <td class="left" width="130px">
                     <strong>Invoice Amount</strong>
                   </td>
                   <td
                     class="right"
+                    width="130px"
                   >Tk. {{ invoice.grandTotal - invoice.discount + ((invoice.grandTotal * 4) / 100) }}</td>
                 </tr>
                 <tr>
-                  <td class="left">
-                    <strong>Collection</strong>
+                  <td class="left" width="130px">
+                    <strong>Payment</strong>
                   </td>
-                  <td class="right">Tk. (-) {{ 200 }}</td>
+                  <td class="right" width="130px">Tk. (-) {{ invoice.payment }}</td>
                 </tr>
                 <tr style="border-top: 2px solid gray">
-                  <td class="left">
+                  <td class="left" width="130px">
                     <strong>Total Due</strong>
                   </td>
-                  <td class="right">
-                    <strong>Tk. {{ invoice.supplier.opening_balance + (invoice.grandTotal - invoice.discount + ((invoice.grandTotal * 4) / 100)) - 200 }}</strong>
+                  <td class="right" width="130px">
+                    <strong>Tk. {{ invoice.supplier.opening_balance + (invoice.grandTotal - invoice.discount + ((invoice.grandTotal * 4) / 100)) - invoice.payment }}</strong>
                   </td>
                 </tr>
               </tbody>
@@ -89,14 +101,14 @@
           </div>
 
           <!-- Total calculate section -->
-          <div class="col-lg-3 col-md-4 col-sm-4 ml-auto">
+          <div class="col-lg-4 col-md-4 col-sm-4 ml-auto">
             <table class="table table-sm table-bordered table-clear">
               <tbody>
                 <tr>
-                  <td class="left">
+                  <td class="left" style="min-width: 130px">
                     <strong>Subtotal</strong>
                   </td>
-                  <td class="right">Tk. {{ invoice.grandTotal }}</td>
+                  <td class="right" style="min-width: 140px">Tk. {{ invoice.grandTotal }}</td>
                 </tr>
                 <tr>
                   <td class="left">
@@ -287,7 +299,7 @@ export default {
   width: 210mm;
   /* height: 7in; */
   min-height: 297mm;
-  padding: 20mm;
+  padding: 10mm;
   margin: 10mm auto;
   /* border: 1px #d3d3d3 solid; */
   border-radius: 5px;
@@ -295,7 +307,7 @@ export default {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 .subpage {
-  padding: 1cm;
+  padding: 0.5cm;
   /* border: 2px red solid; */
   height: 331mm;
   /* height: 257mm; */

@@ -35,8 +35,13 @@ Route::get('category-list', 'API\CategoryController@category_list');
 Route::get('supplier-list', 'API\SupplierController@supplier_list');
 Route::get('customer-list', 'API\CustomerController@customer_list');
 Route::get('unit-list', 'API\UnitController@unit_list');
+Route::get('supplier/previous-dues/{id}', 'API\SupplierController@previousDue');
 
 Route::get('/supplier/search/{search}', 'API\SupplierController@searchSupplier');
+
+// invoice
+Route::get('/sale/invoice/{sale_inv_no}', 'API\Sale\SaleController@getInvoice');
+Route::get('/purchase/invoice/{pur_inv_no}', 'API\Purchase\PurchaseController@getInvoice');
 
 
 // product

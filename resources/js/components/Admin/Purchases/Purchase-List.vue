@@ -59,8 +59,11 @@
                 <th>Action</th>
               </tr>
               <tr v-for="(purchase, index) in purchases.data" :key="index">
-                <td class="greenHover" @click="showInvoice(purchase)">{{ purchase.pur_inv_no }}</td>
-                <td style="text-transform: capitalize;">{{ purchase.supplier.name }}</td>
+                <td
+                  class="greenHover"
+                  @click="showInvoice(purchase.pur_inv_no)"
+                >{{ purchase.pur_inv_no }}</td>
+                <td style="text-transform: capitalize;">{{ purchase.name }}</td>
                 <td
                   style="text-transform: capitalize;"
                 >{{ purchase.user.first_name }} {{ purchase.user.last_name }}</td>
@@ -68,13 +71,13 @@
                 <td>{{ purchase.grandTotal | bdCurrency }} Tk.</td>
                 <td>{{ purchase.created_at | myDate }}</td>
                 <td>
-                  <a href="#" @click="showInvoice(purchase)" title="View Invoice">
+                  <a href="#" @click="showInvoice(purchase.pur_inv_no)" title="View Invoice">
                     <i class="fas fa-eye" style="font-size: 20px;"></i>
                   </a>
-                  <a href="#" @click="editPurchase(purchase)">
+                  <a href="#" @click="editPurchase(purchase.pur_inv_no)">
                     <i class="fas fa-edit green" style="font-size: 20px;"></i>
                   </a>
-                  <a href="#" @click="deletePurchase(purchase)">
+                  <a href="#" @click="deletePurchase(purchase.id, purchase.pur_inv_no)">
                     <i class="fas fa-trash red" style="font-size: 20px;"></i>
                   </a>
                 </td>
@@ -94,108 +97,7 @@
     <!-- Display all purchase in table -->
 
     <!-- Invoice -->
-    <purchase-invoice v-bind:invoice="invoice" class="text-dark w-100" v-else></purchase-invoice>
-    <!-- <div class="col-12 mb-3" id="invoice" v-else>
-        <div class="card p-5">
-          <div>
-            <div class="row">
-              <div class="col-md-6">
-                <h4 class="font-weight-bold">Point Of Sale</h4>
-                <p>
-                  Ashkona, Airport,
-                  <br />
-                  <b>Dhaka, Bangladesh</b>
-                  <br />
-                  <b>01976829262</b>
-                </p>
-              </div>
-              <div class="col-md-6 text-right">
-                <h4 class="font-weight-bold text-primary" style="display: inline-block">INVOICE</h4>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-4">
-                <h4 class="bg-primary p-1 pl-3">Bill From</h4>
-                <strong class="d-block">Name: {{ invoice.supplier.name }}</strong>
-                <h6 class="d-block">Company Name: {{ invoice.supplier.company_name }}</h6>
-                <h6 class="d-block">Address: {{ invoice.supplier.address }}</h6>
-                <h6 class="d-block">Email: {{ invoice.supplier.email }}</h6>
-                <h6 class="d-block">Phone Number: {{ invoice.supplier.mobile }}</h6>
-              </div>
-
-              <div class="col-md-4 ml-auto">
-                <div class="row">
-                  <div class="col-md-12">
-                    <h4 class="bg-primary p-1 pl-3" style="letter-spacing: 1.5px">
-                      Invoice#
-                      <span class="float-right mr-4">Date</span>
-                    </h4>
-                    <h6 class="px-2">
-                      {{ invoice.pur_inv_no }}
-                      <span
-                        class="float-right"
-                      >{{ invoice.created_at | myDate}}</span>
-                    </h6>
-                  </div>
-
-                  <div class="col-md-12 mt-4">
-                    <h4 class="bg-primary p-1 pl-3" style="letter-spacing: 1.5px">Purchased by</h4>
-                    <h6 class="px-2">
-                      <strong>
-                        {{ invoice.user.first_name | capitalize }}
-                        {{ invoice.user.last_name | capitalize }}
-                      </strong>
-                      <small>({{ invoice.user.role | capitalize }})</small>
-                    </h6>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="row mx-2 mt-5">
-              <table class="table table-sm mb-0">
-                <tr>
-                  <th>Sln</th>
-                  <th>Product Name</th>
-                  <th>Quantity</th>
-                  <th>Price</th>
-                  <th class="text-right pr-4">Total</th>
-                </tr>
-
-                <tr v-for="(item, c) in invoice.purchase_items" :key="c">
-                  <td>{{ c+1 }}</td>
-                  <td>{{ item.product.name }}</td>
-                  <td>{{ item.quantity }}</td>
-                  <td>{{ item.price | bdCurrency }} Tk.</td>
-                  <td
-                    class="text-right pr-4"
-                  >{{ Math.ceil(item.quantity * item.price) | bdCurrency }} Tk.</td>
-                </tr>
-
-                <tr>
-                  <td colspan="5"></td>
-                </tr>
-              </table>
-            </div>
-            <div class="row mx-2">
-              <div class="ml-auto mr-3">
-                <strong>Subtotal &nbsp; &nbsp; :</strong>
-                {{ invoice.subTotal |bdCurrency }} Tk.
-                <br />
-                <p style="border-bottom: 1px solid gray; margin-bottom: 0">
-                  <strong>Discount &nbsp; &nbsp; :</strong>
-                  {{ invoice.discount }} Tk.
-                </p>
-                <strong>GrandTotal :</strong>
-                {{ (invoice.subTotal - invoice.discount) | bdCurrency }} Tk.
-                <br />
-              </div>
-            </div>
-          </div>
-        </div>
-    </div>-->
-    <!-- End Invoice -->
+    <purchase-invoice v-bind="{invoice}" class="pt-0 mx-3 w-100" v-else></purchase-invoice>
   </div>
 </template>
 
@@ -207,9 +109,11 @@
 
 
 <script>
+import jsPDF from "jspdf";
 export default {
   data() {
     return {
+      scale: 2,
       purchases: [],
       mode: "purchase-list",
       invoice: {},
@@ -228,12 +132,17 @@ export default {
         this.purchases = response.data;
       });
     },
-
-    // Individual purchase invoice
-    showInvoice(purchase) {
-      this.invoice = purchase;
-      this.mode = "invoice";
+    getInvoice(pur_inv_no) {
+      axios
+        .get("api/purchase/invoice/" + pur_inv_no)
+        .then(({ data }) => (this.invoice = data));
     },
+    // Individual purchase invoice
+    showInvoice(pur_inv_no) {
+      this.mode = "invoice";
+      this.getInvoice(pur_inv_no);
+    },
+
     editPurchase(prop_data) {
       this.$router.push({ name: "purchase", params: { prop_data } });
     },
@@ -245,32 +154,12 @@ export default {
       $("body")
         .empty()
         .html(printcontent);
-      // window.print();
-      if (window.print()) {
-        // var restorepage = $("body").html();
-        // var printcontent = $("#" + el).clone();
-        // var enteredtext = $("#invoice").val();
-        // $("body")
-        //   .empty()
-        //   .html(printcontent);
-      } else {
-        var restorepage = $("body").html();
-        var printcontent = $("#invoice").clone();
-        $("body")
-          .empty()
-          .html(printcontent);
-        // this.showInvoice(purchase);
-        // document.body.style.visibility = "false";
-        // document.getElementById("invoice").style.position = "";
-        // document.getElementById("invoice").style.top = "";
-        // document.getElementById("invoice").style.left = "";
-        alert("Print Canceled");
-      }
+      window.print();
     },
     // delete purchase
-    deletePurchase(purchase) {
-      this.form.id = purchase.id;
-      this.form.pur_inv_no = purchase.pur_inv_no;
+    deletePurchase(id, pur_inv_no) {
+      this.form.id = id;
+      this.form.pur_inv_no = pur_inv_no;
       swal
         .fire({
           title: "Are you sure?",
@@ -283,7 +172,7 @@ export default {
         .then(result => {
           if (result.value) {
             this.form
-              .delete("api/purchase/" + purchase.pur_inv_no)
+              .delete("api/purchase/" + pur_inv_no)
               .then(() => {
                 this.loadPurchases();
                 swal.fire(

@@ -32,6 +32,18 @@ class SaleController extends Controller
 
         return response()->JSON($sales->paginate(10));
     }
+    public function getInvoice($sale_inv_no)
+    {
+        $invoice = Sale::select('sales.*')->join('customers', 'customers.id', '=', 'sales.customer_id')
+            ->orderBy('customers.name', "asc")
+            ->with('customer')
+            ->with('saleItems')
+            ->with('user')
+            ->where('pur_inv_no', '=', $sale_inv_no)
+            ->first();
+
+        return response()->JSON($invoice);
+    }
 
     /**
      * Store a newly created resource in storage.

@@ -25,7 +25,7 @@ class CreateSuppliersTable extends Migration
             $table->string('zip')->nullable();
             $table->text('comments')->nullable();
             $table->integer('user_id');
-            $table->string('opening_balance')->default(0);
+            $table->decimal('opening_balance')->default(0.00);
             $table->rememberToken();
             $table->timestamps();
         });

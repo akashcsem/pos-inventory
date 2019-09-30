@@ -60,7 +60,10 @@
                   <th>Action</th>
                 </tr>
                 <tr v-for="(sale, index) in sales.data" :key="index">
-                  <td class="greenHover" @click="showInvoice(sale)">{{ sale.sale_inv_no }}</td>
+                  <td
+                    class="greenHover"
+                    @click="showInvoice(sale.sale_inv_no)"
+                  >{{ sale.sale_inv_no }}</td>
                   <td
                     style="text-transform: capitalize;"
                   >{{ sale.customer_id == 1 ? sale.name + ' (Cash)' : sale.customer.name }}</td>
@@ -71,13 +74,13 @@
                   <td>{{ sale.grandTotal | bdCurrency }} Tk.</td>
                   <td>{{ sale.created_at | myDate }}</td>
                   <td>
-                    <a href="#" @click="showInvoice(sale)" title="View Invoice">
+                    <a href="#" @click="showInvoice(sale.sale_inv_no)" title="View Invoice">
                       <i class="fas fa-eye" style="font-size: 20px;"></i>
                     </a>
-                    <a href="#" @click="editSale(sale)">
+                    <a href="#" @click="editSale(sale.sale_inv_no)">
                       <i class="fas fa-edit green" style="font-size: 20px;"></i>
                     </a>
-                    <a href="#" @click="deleteSale(sale)">
+                    <a href="#" @click="deleteSale(sale.id, sale.sale_inv_no)">
                       <i class="fas fa-trash red" style="font-size: 20px;"></i>
                     </a>
                   </td>
@@ -239,11 +242,15 @@ export default {
         this.sales = response.data;
       });
     },
-
+    getInvoice(sale_inv_no) {
+      axios
+        .get("api/sale/invoice/" + sale_inv_no)
+        .then(({ data }) => (this.invoice = data));
+    },
     // Individual sale invoice
-    showInvoice(sale) {
-      this.invoice = sale;
+    showInvoice(sale_inv_no) {
       this.mode = "invoice";
+      this.getInvoice(sale_inv_no);
     },
     editSale(prop_data) {
       this.$router.push({ name: "sale", params: { prop_data } });
@@ -259,9 +266,9 @@ export default {
     },
 
     // delete sale
-    deleteSale(sale) {
-      this.form.id = sale.id;
-      this.form.sale_inv_no = sale.sale_inv_no;
+    deleteSale(id, sale_inv_no) {
+      this.form.id = id;
+      this.form.sale_inv_no = sale_inv_no;
       swal
         .fire({
           title: "Are you sure?",
@@ -274,12 +281,12 @@ export default {
         .then(result => {
           if (result.value) {
             this.form
-              .delete("api/sale/" + sale.sale_inv_no)
+              .delete("api/sale/" + sale_inv_no)
               .then(() => {
                 this.loadSales();
                 swal.fire(
                   "Deleted!",
-                  sale.sale_inv_no + "Deleted successful.",
+                  sale_inv_no + "Deleted successful.",
                   "success"
                 );
               })

@@ -15,7 +15,6 @@ import Routes from "./routes";
 
 // main.js
 import "./filters.js";
-
 import { Form, HasError, AlertError } from "vform";
 import VueProgressBar from "vue-progressbar";
 

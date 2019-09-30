@@ -18,7 +18,7 @@ class CreatePurchaseDetailsTable extends Migration
             $table->string('pur_inv_no');
             $table->string('product_code');
             $table->integer('quantity');
-            $table->decimal('price', 15, 3);
+            $table->decimal('price', 15, 2);
             $table->timestamps();
         });
     }

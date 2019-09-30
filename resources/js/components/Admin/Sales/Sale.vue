@@ -234,6 +234,7 @@ export default {
       },
 
       shopItems: [],
+      oldSale: [],
       form: {
         productName: "",
         product_code: "",
@@ -260,26 +261,10 @@ export default {
   mounted() {
     if (this.prop_data) {
       this.mode = "sale edit";
-      this.customer = this.prop_data.customer.name;
-
-      let prop_product = this.prop_data.sale_items;
-      for (let i = 0; i < prop_product.length; i++) {
-        this.form.productName = prop_product[i].product.name;
-        this.form.product_code = prop_product[i].product_code;
-        this.form.quantity = prop_product[i].quantity;
-        this.form.price = prop_product[i].price;
-
-        this.shopItems.push(this.form);
-        this.form = {};
-      }
-      var total = 0;
-      var quantity = 0;
-      for (var i = 0; i < Object.keys(this.shopItems).length; i++) {
-        total += this.shopItems[i].quantity * this.shopItems[i].price;
-        quantity += parseInt(this.shopItems[i].quantity);
-      }
-      this.grandTotal = total;
-      this.totalQuantity = quantity;
+      axios.get("api/sale/invoice/" + this.prop_data).then(({ data }) => {
+        this.oldPurchase = data;
+        this.populateOldSale();
+      });
     } else {
       this.mode = "sale";
     }
@@ -306,7 +291,28 @@ export default {
     currentDate() {
       return new Date();
     },
+    populateOldSale() {
+      this.customer = this.oldSale.name;
 
+      let prop_product = this.oldSale.sale_items;
+      for (let i = 0; i < prop_product.length; i++) {
+        this.form.productName = prop_product[i].product.name;
+        this.form.product_code = prop_product[i].product_code;
+        this.form.quantity = prop_product[i].quantity;
+        this.form.price = prop_product[i].price;
+
+        this.shopItems.push(this.form);
+        this.form = {};
+      }
+      var total = 0;
+      var quantity = 0;
+      for (var i = 0; i < Object.keys(this.shopItems).length; i++) {
+        total += this.shopItems[i].quantity * this.shopItems[i].price;
+        quantity += parseInt(this.shopItems[i].quantity);
+      }
+      this.grandTotal = total;
+      this.totalQuantity = quantity;
+    },
     // clear all data
     clearAll() {
       // reset all data
@@ -447,7 +453,7 @@ export default {
             data: {
               shopItems: JSON.stringify(this.shopItems),
               customerInfo: JSON.stringify(this.customerInfo),
-              oldSale: JSON.stringify(this.prop_data)
+              oldSale: JSON.stringify(this.oldSale)
             }
           })
             .then(() => {

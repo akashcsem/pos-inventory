@@ -6,6 +6,8 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Others\Supplier;
+use App\Model\Others\SupplierDetail;
+use Illuminate\Support\Facades\DB;
 
 class SupplierController extends Controller
 {
@@ -26,7 +28,16 @@ class SupplierController extends Controller
 
    public function supplier_list()
    {
-      return Supplier::pluck('name')->toArray();
+
+      $suppliers = Supplier::all('id', 'name');
+      return $suppliers;
+      // return Supplier::pluck('name')->toArray();
+   }
+   public function previousDue($id)
+   {
+      $credit = DB::table('supplier_details')->where('supplier_id', '=', $id)->sum('credit');
+      $debit = DB::table('supplier_details')->where('supplier_id', '=', $id)->sum('debit');
+      return ($credit - $debit);
    }
 
    public function store(Request $request)
